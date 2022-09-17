@@ -1,5 +1,6 @@
 # minio 테스트 환경 구축
 
+## 설치
 도커
 
 ```bash
@@ -16,3 +17,8 @@ docker run \
 kubectl apply -f ./minio.yaml
 ```
 - 서비스를 NodePort로 변경하거나 사용중인 쿠버네티스 환경에서 적절히 포트포워딩해서 사용
+
+## 실행
+- 아래 VM 옵션이 없으면 프로그램 실행 시점에 EC2의 메타데이터를 읽다가 실패함
+- 안써도 WARNING 로그 남고 실행은되나 불필요한 동작이므로 추가해주는 것이 좋음
+- `-Dcom.amazonaws.sdk.disableEc2Metadata=true`
