@@ -26,9 +26,11 @@ class WebSecurityConfig {
     @Throws(Exception::class)
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
+            .csrf().disable()
             .authorizeHttpRequests{ requests ->
                 requests
                     .antMatchers("/", "/home").permitAll()
+                    .antMatchers("/api/**").permitAll()
                     .anyRequest().authenticated()
             }
             .formLogin { form ->
