@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>File Upload</title>
+    <script type="text/javascript" th:src="@{/js/file-upload.js}"></script>
+</head>
+<body>
+<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+<div id="file-input-error-msg"></div>
+<form id="file-upload-form" method="post">
+    <div><input id="file-input" type="file"/></div>
+    <div><input type="submit"/></div>
+</form>
+</body>
+</html>

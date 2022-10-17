@@ -17,3 +17,16 @@ spring:
   h2:
     console:
       enabled: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: web-clipboard
+      secretKey: password
+    region.static: us-east-1
+    stack:
+      auto: false
+
+my-app:
+  aws:
+    service-endpoint: http://localhost:9000
