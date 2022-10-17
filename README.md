@@ -11,3 +11,8 @@ id: sa
 password:
 ```
 - The in memory H2 DB can only run while the server is running because the server provides a tcp server wrapped around the in memory H2 DB you can access it.
+
+## How to connect to swagger 3 documentation
+```
+http://localhost:8080/swagger-ui/index.html
+```
