@@ -29,6 +29,8 @@ dependencies {
 	implementation("com.h2database:h2")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.2")
+	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+	implementation("io.springfox:springfox-boot-starter:3.0.0")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
