@@ -22,3 +22,10 @@ kubectl apply -f ./minio.yaml
 - 아래 VM 옵션이 없으면 프로그램 실행 시점에 EC2의 메타데이터를 읽다가 실패함
 - 안써도 WARNING 로그 남고 실행은되나 불필요한 동작이므로 추가해주는 것이 좋음
 - `-Dcom.amazonaws.sdk.disableEc2Metadata=true`
+
+## Minio 설정
+1. 계정 생성 
+   - readwrite 권한
+   - 계정 이름이 accessKey, 비밀번호가 secretKey
+2. 버킷 생성 (web-clipboard)
+3. `버킷 > Manage > Acess Audit > Users` 에서 계정 추가

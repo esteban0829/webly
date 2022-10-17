@@ -1,4 +1,4 @@
-package com.webClipBoard.file
+package com.webClipBoard.service
 
 import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.AmazonS3
