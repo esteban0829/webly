@@ -13,8 +13,8 @@ function main() {
         } else {
             try {
                 const file = fileInput.files[0];
-                const preassignedUrl = await getPreassignedUrl(file.name);
-                const response = await uploadFile(preassignedUrl, file);
+                const presignedUrl = await getPresignedUrl(file.name);
+                const response = await uploadFile(presignedUrl, file);
             }
             catch (e) {
                 console.error(e);
@@ -23,9 +23,9 @@ function main() {
     }
 }
 
-async function getPreassignedUrl(filename) {
+async function getPresignedUrl(filename) {
     const response = await fetch(
-        new Request("/api/v1/files/createPreassignedUrl", {
+        new Request("/api/v1/files/createPresignedUrl", {
             method: "POST",
             body: filename,
         })

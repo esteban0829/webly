@@ -14,7 +14,7 @@ class FileService(
 ) {
 
     @Transactional
-    fun createPreassignedUrl(filename: String): String {
+    fun createPresignedUrl(filename: String): String {
         val bucketName = "web-clipboard"
 
         val expiration = Date()

@@ -3,7 +3,6 @@ package com.webClipBoard.controller
 import com.webClipBoard.service.FileService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 
@@ -14,12 +13,12 @@ class FileRestController(
 ) {
 
     @Transactional
-    @PostMapping("/createPreassignedUrl")
-    fun createPreassignedUrl(
+    @PostMapping("/createPresignedUrl")
+    fun createPresignedUrl(
         @RequestBody filename: String
     ): ResponseEntity<String> {
         return ResponseEntity(
-            fileService.createPreassignedUrl(filename),
+            fileService.createPresignedUrl(filename),
             HttpStatus.CREATED,
         )
     }
