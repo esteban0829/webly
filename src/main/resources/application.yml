@@ -32,4 +32,5 @@ cloud:
 
 my-app:
   aws:
+    bucket: web-clipboard
     service-endpoint: http://localhost:9000

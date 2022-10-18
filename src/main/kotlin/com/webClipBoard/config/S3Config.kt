@@ -9,6 +9,11 @@ import com.amazonaws.services.s3.AmazonS3Client
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import javax.annotation.PostConstruct
+
+enum class S3BucketType {
+    WEB_CLIPBOARD
+}
 
 @Configuration
 class S3Config {
@@ -23,6 +28,18 @@ class S3Config {
 
     @Value("\${my-app.aws.service-endpoint}")
     private lateinit var awsServiceEndpoint: String
+
+    @Value("\${my-app.aws.bucket}")
+    private lateinit var bucket: String
+
+    lateinit var buckets: Map<S3BucketType, String>
+
+    @PostConstruct
+    fun init() {
+        buckets = mapOf(
+                S3BucketType.WEB_CLIPBOARD to bucket,
+        )
+    }
 
     @Bean
     fun amazonS3(): AmazonS3 {
