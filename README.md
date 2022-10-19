@@ -6,7 +6,9 @@
 
 ## How to connect to local in memory H2 DB
 ```
-url: jdbc:h2:tcp://localhost:9092/mem:testdb;OLD_INFORMATION_SCHEMA=TRUE
+http://localhost:8080/h2-console
+
+jdbc url: jdbc:h2:tcp://localhost:9092/mem:testdb;OLD_INFORMATION_SCHEMA=TRUE
 id: sa
 password:
 ```
