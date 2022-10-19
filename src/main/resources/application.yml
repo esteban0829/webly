@@ -34,3 +34,6 @@ my-app:
   aws:
     bucket: web-clipboard
     service-endpoint: http://localhost:9000
+
+server:
+  port: 8081

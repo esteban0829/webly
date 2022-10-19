@@ -8,10 +8,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class WebMvcConfig: WebMvcConfigurer {
     override fun addViewControllers(registry: ViewControllerRegistry) {
         super.addViewControllers(registry)
-        registry.addViewController("/home").setViewName("home");
-        registry.addViewController("/").setViewName("home");
-        registry.addViewController("/hello").setViewName("hello");
-        registry.addViewController("/login").setViewName("login");
-        registry.addViewController("/file-upload").setViewName("file-upload");
+        registry.addViewController("/login").setViewName("login")
+        registry.addViewController("/signup").setViewName("signup")
+        registry.addViewController("/admin").setViewName("admin")
+        registry.addViewController("/").setViewName("main")
+        registry.addViewController("/file-upload").setViewName("file-upload")
+        registry.addViewController("/hello").setViewName("hello")
     }
 }
