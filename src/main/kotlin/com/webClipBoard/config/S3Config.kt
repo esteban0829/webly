@@ -37,7 +37,7 @@ class S3Config {
     @PostConstruct
     fun init() {
         buckets = mapOf(
-                S3BucketType.WEB_CLIPBOARD to bucket,
+            S3BucketType.WEB_CLIPBOARD to bucket,
         )
     }
 
