@@ -5,10 +5,9 @@
 2. `curl localhost:8080/api/v1/health/hello`
 
 ## How to connect to local in memory H2 DB
+- browser base console : http://localhost:8080/h2-console
+- intellij data console jdbc url : `jdbc:h2:tcp://localhost:9092/mem:testdb;OLD_INFORMATION_SCHEMA=TRUE`
 ```
-http://localhost:8080/h2-console
-
-jdbc url: jdbc:h2:tcp://localhost:9092/mem:testdb;OLD_INFORMATION_SCHEMA=TRUE
 id: sa
 password:
 ```
