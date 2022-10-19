@@ -8,3 +8,7 @@ import java.util.*
 interface AccountRepository: JpaRepository<Account, Long> {
     fun findByUserId(userId: String): Optional<Account>
 }
+
+@Repository
+interface FileRepository: JpaRepository<FileEntity, Long> {
+}
