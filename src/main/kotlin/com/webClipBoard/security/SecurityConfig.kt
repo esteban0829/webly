@@ -21,7 +21,7 @@ class SecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
             .antMatchers("/login", "/signup", "/user", "/hello").permitAll()
-            .antMatchers("/").hasAuthority(Role.USER.authority) // USER, ADMIN can access
+            .antMatchers("/", "/api/v1/files/**").hasAuthority(Role.USER.authority) // USER, ADMIN can access
             .antMatchers("/admin").hasAuthority(Role.ADMIN.authority) // only ADMIN can access
             .anyRequest().authenticated() // any request excluding above should have any authentication
             .and()

@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>File Upload</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <script type="text/javascript" th:src="@{/js/file-upload.js}"></script>
 </head>
 <body>
