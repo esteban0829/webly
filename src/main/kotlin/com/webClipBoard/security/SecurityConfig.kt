@@ -1,5 +1,6 @@
 package com.webClipBoard.security
 
+import com.webClipBoard.Role
 import com.webClipBoard.service.AccountService
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -19,15 +20,14 @@ class SecurityConfig(
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-            .antMatchers("/login", "/signup", "/user").permitAll()
-            .antMatchers("/").hasRole("USER") // USER, ADMIN can access
-            .antMatchers("/admin").hasRole("ADMIN") // only ADMIN can access
+            .antMatchers("/login", "/signup", "/user", "/hello").permitAll()
+            .antMatchers("/").hasAuthority(Role.USER.authority) // USER, ADMIN can access
+            .antMatchers("/admin").hasAuthority(Role.ADMIN.authority) // only ADMIN can access
             .anyRequest().authenticated() // any request excluding above should have any authentication
             .and()
             .formLogin()
                 .loginPage("/login")
                 .defaultSuccessUrl("/")
-                .failureForwardUrl("/hello")
             .and()
             .logout()
                 .logoutSuccessUrl("/login")

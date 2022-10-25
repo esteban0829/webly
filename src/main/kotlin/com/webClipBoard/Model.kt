@@ -3,16 +3,15 @@ package com.webClipBoard
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import java.util.HashSet
 
 import org.springframework.security.core.GrantedAuthority
 
 
 
 
-enum class Role(val priority: Long) {
-    ADMIN(1),
-    USER(2),
+enum class Role(val permissionLevel: Long, val authority: String) {
+    ADMIN(1, "ADMIN"),
+    USER(2, "USER"),
 }
 
 @Entity
@@ -36,7 +35,7 @@ data class Account(
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
         return Role.values()
-            .filter { this.role.priority >= it.priority }
+            .filter { this.role.permissionLevel <= it.permissionLevel }
             .map { SimpleGrantedAuthority(it.toString()) }
             .toSet()
     }
