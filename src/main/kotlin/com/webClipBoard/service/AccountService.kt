@@ -48,11 +48,11 @@ class AccountService(
         return accountRepository.existsByEmail(email)
     }
 
-    override fun loadUserByUsername(id: String): UserDetails {
+    override fun loadUserByUsername(email: String): UserDetails {
         try {
-            return accountRepository.findById(id.toLong()).get()
+            return accountRepository.findByEmail(email).get()
         } catch (e: Exception) {
-            throw UsernameNotFoundException("user not found id: $id", e)
+            throw UsernameNotFoundException("user with email: $email not found", e)
         }
     }
 }
