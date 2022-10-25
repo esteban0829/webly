@@ -13,6 +13,11 @@ class UserController(
 
     @PostMapping("/user")
     fun saveUser(userCreateDTO: UserCreateDTO): String {
+
+        if (accountService.checkIfAccountExist(userCreateDTO.email)) {
+            throw Exception("email already existing")
+        }
+
         userCreateDTO.let {
             when (it.role) {
                 Role.ADMIN -> accountService.createAdminAccount(

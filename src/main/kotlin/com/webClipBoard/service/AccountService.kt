@@ -43,6 +43,11 @@ class AccountService(
         }
     }
 
+    @Transactional
+    fun checkIfAccountExist(email: String): Boolean {
+        return accountRepository.existsByEmail(email)
+    }
+
     override fun loadUserByUsername(id: String): UserDetails {
         try {
             return accountRepository.findById(id.toLong()).get()
