@@ -3,8 +3,7 @@ package com.webClipBoard.service
 import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
-import com.webClipBoard.File
-import com.webClipBoard.FileRepository
+import com.webClipBoard.*
 import com.webClipBoard.config.S3BucketType
 import com.webClipBoard.config.S3Config
 import org.springframework.stereotype.Service
@@ -20,7 +19,7 @@ class FileService(
     private val fileRepository: FileRepository,
 ) {
 
-    fun createPresignedUrl(filename: String): URL {
+    private fun createPresignedUrl(filename: String): URL {
         val bucket = s3Config.buckets[S3BucketType.WEB_CLIPBOARD]
         val expiration = Date().apply {
             val oneHour = (1000 * 60 * 60).toLong()
@@ -41,5 +40,35 @@ class FileService(
         ))
     }.run {
         toString()
+    }
+
+    @Transactional
+    fun createFile(fileCreateDTO: FileCreateDTO): FileUserDTO {
+        val presignedUrl = createPresignedUrl(fileCreateDTO.fileName)
+        return fileCreateDTO.run {
+            fileRepository.save(File(
+                name = fileName,
+                filePath = presignedUrl.path
+            )).toDTO().toFileUserDTO(presignedUrl = presignedUrl.toString())
+        }
+    }
+
+    @Transactional
+    fun updateFileStatus(fileId: Long, status: FileStatus): FileDTO {
+        val file = fileRepository.findByIdForUpdate(fileId)
+        file.status = status
+        return fileRepository.save(file).toDTO()
+    }
+
+    private fun FileDTO.toFileUserDTO(presignedUrl: String): FileUserDTO {
+        return FileUserDTO(
+            id = id,
+            name = name,
+            filePath = filePath,
+            status = status,
+            createDateTime = createDateTime,
+            updateDateTime = updateDateTime,
+            presignedUrl = presignedUrl,
+        )
     }
 }

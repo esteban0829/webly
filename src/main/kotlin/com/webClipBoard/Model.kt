@@ -33,6 +33,8 @@ data class Account(
         userId = userId,
         userPassword = userPassword,
         role = role,
+        createDateTime = createDateTime,
+        updateDateTime = updateDateTime,
     )
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
@@ -67,13 +69,28 @@ data class Account(
     }
 }
 
+enum class FileStatus {
+    UPLOADING, DONE,
+}
+
 @Entity
 data class File(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val name: String,
     val filePath: String,
-): BaseTimeEntity()
+    @Enumerated(EnumType.STRING)
+    var status: FileStatus = FileStatus.UPLOADING
+): BaseTimeEntity() {
+    fun toDTO() = FileDTO(
+        id = id!!,
+        name = name,
+        filePath = filePath,
+        status = status,
+        createDateTime = createDateTime,
+        updateDateTime = updateDateTime
+    )
+}
 
 @MappedSuperclass
 abstract class BaseTimeEntity(
