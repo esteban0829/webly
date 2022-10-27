@@ -11,5 +11,4 @@ interface AccountRepository: JpaRepository<Account, Long> {
 }
 
 @Repository
-interface FileRepository: JpaRepository<FileEntity, Long> {
-}
+interface FileRepository: JpaRepository<File, Long>

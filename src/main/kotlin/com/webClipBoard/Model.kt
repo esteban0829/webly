@@ -1,12 +1,14 @@
 package com.webClipBoard
 
+import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.UpdateTimestamp
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 import org.springframework.security.core.GrantedAuthority
-
-
+import java.time.OffsetDateTime
 
 
 enum class Role(val permissionLevel: Long, val authority: String) {
@@ -24,7 +26,7 @@ data class Account(
     val name: String,
     @Enumerated(EnumType.STRING)
     val role: Role,
-): UserDetails {
+): UserDetails, BaseTimeEntity() {
     fun toDTO() = AccountDTO(
         id = id!!,
         name = name,
@@ -64,10 +66,19 @@ data class Account(
         return true
     }
 }
+
 @Entity
-data class FileEntity(
+data class File(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val name: String,
     val filePath: String,
+): BaseTimeEntity()
+
+@MappedSuperclass
+abstract class BaseTimeEntity(
+    @CreationTimestamp
+    val createDateTime: OffsetDateTime = OffsetDateTime.now(),
+    @UpdateTimestamp
+    val updateDateTime: OffsetDateTime? = null,
 )

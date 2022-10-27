@@ -3,7 +3,7 @@ package com.webClipBoard.service
 import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
-import com.webClipBoard.FileEntity
+import com.webClipBoard.File
 import com.webClipBoard.FileRepository
 import com.webClipBoard.config.S3BucketType
 import com.webClipBoard.config.S3Config
@@ -35,7 +35,7 @@ class FileService(
 
     @Transactional
     fun createFileAndReturnPresignedUrl(filename: String) = createPresignedUrl(filename).also {
-        fileRepository.save(FileEntity(
+        fileRepository.save(File(
             name = filename,
             filePath = it.path,
         ))
