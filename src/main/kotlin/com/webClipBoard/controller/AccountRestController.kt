@@ -21,7 +21,7 @@ class AccountRestController(
     fun registerAccount(
         @RequestBody accountCreateDTO: AccountCreateDTO
     ): ResponseEntity<Any> {
-        accountService.createUserAccount(accountCreateDTO)
+        accountService.createAccount(accountCreateDTO)
         return ResponseEntity(HttpStatus.CREATED)
     }
 

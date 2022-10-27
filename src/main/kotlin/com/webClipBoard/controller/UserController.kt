@@ -18,25 +18,16 @@ class UserController(
             throw Exception("email already existing")
         }
 
-        userCreateDTO.let {
-            when (it.role) {
-                Role.ADMIN -> accountService.createAdminAccount(
-                    AccountCreateDTO(
-                        userId = "",
-                        userPassword = it.password,
-                        userEmail = it.email,
-                        userName = ""
-                    )
+        userCreateDTO.run {
+            accountService.createAccount(
+                AccountCreateDTO(
+                    userId = userId,
+                    userPassword = password,
+                    userEmail = email,
+                    userName = userName,
+                    role = role,
                 )
-                Role.USER -> accountService.createUserAccount(
-                    AccountCreateDTO(
-                        userId = "",
-                        userPassword = it.password,
-                        userEmail = it.email,
-                        userName = ""
-                    )
-                )
-            }
+            )
         }
         return "redirect:/login"
     }
@@ -46,4 +37,6 @@ data class UserCreateDTO(
     val email: String,
     val password: String,
     val role: Role,
+    val userId: String,
+    val userName: String,
 )

@@ -18,27 +18,14 @@ class AccountService(
     }
 
     @Transactional
-    fun createUserAccount(accountCreateDTO: AccountCreateDTO): AccountDTO {
+    fun createAccount(accountCreateDTO: AccountCreateDTO): AccountDTO {
         accountCreateDTO.run {
             return accountRepository.save(Account(
                 userId = userId,
                 userPassword = BCryptPasswordEncoder().encode(userPassword),
                 email = userEmail,
                 name = userName,
-                role = Role.USER,
-            )).toDTO()
-        }
-    }
-
-    @Transactional
-    fun createAdminAccount(accountCreateDTO: AccountCreateDTO): AccountDTO {
-        accountCreateDTO.run {
-            return accountRepository.save(Account(
-                userId = userId,
-                userPassword = BCryptPasswordEncoder().encode(userPassword),
-                email = userEmail,
-                name = userName,
-                role = Role.ADMIN,
+                role = role,
             )).toDTO()
         }
     }

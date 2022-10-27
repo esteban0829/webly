@@ -13,4 +13,5 @@ data class AccountCreateDTO(
     val userPassword: String,
     val userEmail: String,
     val userName: String,
+    val role: Role,
 )

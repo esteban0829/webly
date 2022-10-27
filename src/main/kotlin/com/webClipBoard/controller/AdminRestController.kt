@@ -20,7 +20,7 @@ class AdminRestController(
         @RequestBody accountCreateDTO: AccountCreateDTO
     ): ResponseEntity<AccountDTO> {
         return ResponseEntity(
-            accountService.createAdminAccount(accountCreateDTO),
+            accountService.createAccount(accountCreateDTO),
             HttpStatus.CREATED
         )
     }
