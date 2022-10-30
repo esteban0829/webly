@@ -2,13 +2,11 @@ package com.webClipBoard
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import org.springframework.security.core.userdetails.UserDetails
-import javax.persistence.*
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.time.OffsetDateTime
+import javax.persistence.*
 
 
 enum class Role(val permissionLevel: Long, val authority: String) {
@@ -95,7 +93,175 @@ data class File(
 @MappedSuperclass
 abstract class BaseTimeEntity(
     @CreationTimestamp
-    val createDateTime: OffsetDateTime = OffsetDateTime.now(),
+    open val createDateTime: OffsetDateTime = OffsetDateTime.now(),
     @UpdateTimestamp
-    val updateDateTime: OffsetDateTime? = null,
+    open val updateDateTime: OffsetDateTime? = null,
 )
+
+@Entity
+data class Project(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val name: String,
+) : BaseTimeEntity()
+
+@Entity
+data class ProjectAccount(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    val account: Account,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    val project: Project,
+) : BaseTimeEntity()
+
+@Entity
+data class Folder(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val name: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_folder_id")
+    val parent: Folder?,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    val project: Project,
+) : BaseTimeEntity()
+
+@Entity
+data class Link(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val name: String,
+    val url: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    val folder: Folder,
+) : BaseTimeEntity()
+
+enum class ActionType(val value: String) {
+    CreateLink(Values.CreateLink),
+    DeleteLink(Values.DeleteLink),
+    RenameLink(Values.RenameLink),
+    MoveLink(Values.MoveLink),
+    CreateFolder(Values.CreateFolder),
+    DeleteFolder(Values.DeleteFolder),
+    RenameFolder(Values.RenameFolder),
+    MoveFolder(Values.MoveFolder);
+
+    class Values {
+        companion object {
+            const val CreateLink = "CREATE_LINK"
+            const val DeleteLink = "DELETE_LINK"
+            const val RenameLink = "RENAME_LINK"
+            const val MoveLink = "MOVE_LINK"
+            const val CreateFolder = "CREATE_FOLDER"
+            const val DeleteFolder = "DELETE_FOLDER"
+            const val RenameFolder = "RENAME_FOLDER"
+            const val MoveFolder = "MOVE_FOLDER"
+        }
+    }
+}
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
+abstract class ActionLog(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    open val id: Long? = null,
+
+    @Column(name = "action_type", insertable = false, updatable = false)
+    @Enumerated(EnumType.STRING)
+    open val actionType: ActionType? = null
+) : BaseTimeEntity()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.CreateLink)
+class CreateLinkActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "link_id")
+    val link: Link,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.DeleteLink)
+class DeleteLinkActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "link_id")
+    val link: Link,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.RenameLink)
+class RenameLinkActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "link_id")
+    val link: Link,
+    val oldName: String,
+    val newName: String,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.MoveLink)
+class MoveLinkActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "link_id")
+    val link: Link,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_folder_id")
+    val fromFolder: Folder,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_folder_id")
+    val toFolder: Folder
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.CreateFolder)
+class CreateFolderActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    val folder: Folder,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.DeleteFolder)
+class DeleteFolderActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    val folder: Folder,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.RenameFolder)
+class RenameFolderActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    val folder: Folder,
+    val oldName: String,
+    val newName: String,
+) : ActionLog()
+
+@Entity
+@DiscriminatorValue(value = ActionType.Values.MoveFolder)
+class MoveFolderActionLog(
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folder_id")
+    val folder: Folder,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "from_folder_id")
+    val fromFolder: Folder,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_folder_id")
+    val toFolder: Folder
+) : ActionLog()
