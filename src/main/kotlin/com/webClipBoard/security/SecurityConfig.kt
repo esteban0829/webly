@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter
 
 @EnableWebSecurity
 class SecurityConfig(
@@ -19,8 +20,15 @@ class SecurityConfig(
     }
 
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
-            .antMatchers("/login", "/signup", "/user", "/hello").permitAll()
+        http
+            .headers()
+                .addHeaderWriter(XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
+            .and()
+            .csrf()
+                .ignoringAntMatchers("/h2-console/**", "/swagger-ui/**")
+            .and()
+            .authorizeRequests()
+            .antMatchers("/login", "/signup", "/user", "/hello", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**",).permitAll()
             .antMatchers("/", "/api/v1/files/**").hasAuthority(Role.USER.authority) // USER, ADMIN can access
             .antMatchers("/admin").hasAuthority(Role.ADMIN.authority) // only ADMIN can access
             .anyRequest().authenticated() // any request excluding above should have any authentication
