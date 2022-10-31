@@ -102,8 +102,14 @@ abstract class BaseTimeEntity(
 data class Project(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val name: String,
+    var name: String,
 ) : BaseTimeEntity()
+
+enum class ProjectAccountType {
+    OWNER,
+    ADMIN,
+    USER,
+}
 
 @Entity
 data class ProjectAccount(
@@ -117,6 +123,9 @@ data class ProjectAccount(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     val project: Project,
+
+    @Enumerated(EnumType.STRING)
+    val projectAccountType: ProjectAccountType,
 ) : BaseTimeEntity()
 
 @Entity

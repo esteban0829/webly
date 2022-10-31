@@ -42,3 +42,23 @@ class FileUserDTO(
     val updateDateTime: OffsetDateTime?,
     val presignedUrl: String,
 )
+
+class ProjectDTO(
+    val id: Long,
+    val name: String,
+)
+
+fun Project.toDto(): ProjectDTO {
+    return ProjectDTO(
+        id = this.id!!,
+        name = this.name,
+    )
+}
+
+class CreateProjectDTO(
+    val name: String,
+) {
+    fun toEntity() = Project(
+        name = name,
+    )
+}
