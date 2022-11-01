@@ -1,9 +1,6 @@
 package com.webClipBoard.service
 
-import com.webClipBoard.Account
-import com.webClipBoard.AccountRepository
-import com.webClipBoard.CreateProjectDTO
-import com.webClipBoard.Role
+import com.webClipBoard.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -20,6 +17,8 @@ internal class ProjectServiceTest {
     lateinit var projectService: ProjectService
     @Autowired
     lateinit var accountRepository: AccountRepository
+    @Autowired
+    lateinit var projectRepository: ProjectRepository
 
     private fun createUser(name: String) {
         val owner = Account(
@@ -65,13 +64,83 @@ internal class ProjectServiceTest {
 
     @Test
     fun deleteProject() {
+        val owner = getAccount(ownerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+
+        projectService.deleteProject(projectId, owner)
+
+        val exists = projectRepository.existsById(projectId)
+        assertFalse(exists)
+    }
+
+    @Test
+    fun `deleteProject throw UnAuthorizedProjectException if account has no auth`() {
+        val stranger = getAccount(strangerName)
+        val owner = getAccount(ownerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+            name = "owner_project"
+        ), owner)
+
+        assertThrows(UnAuthorizedProjectException::class.java) {
+            projectService.deleteProject(projectId, stranger)
+        }
+    }
+
+    @Test
+    fun `deleteProject throw ProjectNotFoundException if project not exists`() {
+        val owner = getAccount(ownerName)
+        val unavailableId = 987654321L
+        assertThrows(ProjectNotFoundException::class.java) {
+            projectService.deleteProject(unavailableId, owner)
+        }
     }
 
     @Test
     fun renameProject() {
+        val owner = getAccount(ownerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+
+        projectService.renameProject(projectId, "new_name", owner)
+
+        val project = projectRepository.findById(projectId).get()
+        assertEquals(project.name, "new_name")
+    }
+
+    @Test
+    fun `renameProject throw UnAuthorizedProjectException if account has no auth`() {
+        val stranger = getAccount(strangerName)
+        val owner = getAccount(ownerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+
+        assertThrows(UnAuthorizedProjectException::class.java) {
+            projectService.renameProject(projectId, "new_name", stranger)
+        }
+    }
+
+    @Test
+    fun `renameProject throw ProjectNotFoundException if project not exists`() {
+        val owner = getAccount(ownerName)
+        val unavailableId = 987654321L
+        assertThrows(ProjectNotFoundException::class.java) {
+            projectService.renameProject(unavailableId, "new_project", owner)
+        }
     }
 
     @Test
     fun createProject() {
+        val owner = getAccount(ownerName)
+
+        val projectId = projectService.createProject(CreateProjectDTO(
+            name = "project_name"
+        ), owner)
+
+        val project = projectRepository.findById(projectId).get()
+        assertEquals(project.name, "project_name")
     }
 }

@@ -23,6 +23,7 @@ class ProjectService(
         val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
             ?: throw UnAuthorizedProjectException()
         if (projectAccount.projectAccountType == ProjectAccountType.OWNER) {
+            projectAccountRepository.delete(projectAccount)
             projectRepository.delete(project)
         } else {
             throw UnAuthorizedProjectException()
