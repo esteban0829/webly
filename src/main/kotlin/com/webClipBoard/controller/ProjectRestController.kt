@@ -19,7 +19,7 @@ class ProjectRestController(
     private val projectService: ProjectService
 ) {
 
-    @PostMapping("/project")
+    @PostMapping("/projects")
     fun createProject(
         @AuthenticationPrincipal account: Account,
         @RequestBody createProjectDTO: CreateProjectDTO,
@@ -36,7 +36,7 @@ class ProjectRestController(
         return projectService.getProjects(account)
     }
 
-    @DeleteMapping("/project/{id}")
+    @DeleteMapping("/projects/{id}")
     fun deleteProject(
         @AuthenticationPrincipal account: Account,
         @PathVariable id: Long,
@@ -46,13 +46,36 @@ class ProjectRestController(
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/project/{id}/rename")
+    @PostMapping("/projects/{id}/rename")
     fun getProject(
         @AuthenticationPrincipal account: Account,
         @PathVariable id: Long,
         @RequestBody newName: String
     ): ResponseEntity<Unit> {
         projectService.renameProject(id, newName, account)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @PostMapping("/projects/{projectId}/accounts/{accountId}")
+    fun addAccount(
+        @AuthenticationPrincipal account: Account,
+        @PathVariable projectId: Long,
+        @PathVariable accountId: Long,
+        @RequestBody isAdmin: Boolean,
+    ): ResponseEntity<Unit> {
+        projectService.addAccountToProject(account, projectId, accountId, isAdmin)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @DeleteMapping("/projects/{projectId}/accounts/{accountId}")
+    fun deleteAccount(
+        @AuthenticationPrincipal account: Account,
+        @PathVariable projectId: Long,
+        @PathVariable accountId: Long,
+    ): ResponseEntity<Unit> {
+        projectService.deleteAccountToProject(account, projectId, accountId)
 
         return ResponseEntity(HttpStatus.OK)
     }

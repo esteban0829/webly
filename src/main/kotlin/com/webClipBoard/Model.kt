@@ -126,7 +126,18 @@ data class ProjectAccount(
 
     @Enumerated(EnumType.STRING)
     val projectAccountType: ProjectAccountType,
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+
+    fun canAddAccountToProject(targetIsAdmin: Boolean): Boolean {
+        return projectAccountType == ProjectAccountType.OWNER ||
+                projectAccountType == ProjectAccountType.ADMIN && !targetIsAdmin
+    }
+
+    fun canDeleteAccountToProject(targetAccount: ProjectAccount): Boolean {
+        return projectAccountType == ProjectAccountType.OWNER ||
+                projectAccountType == ProjectAccountType.ADMIN && targetAccount.projectAccountType != ProjectAccountType.OWNER
+    }
+}
 
 @Entity
 data class Folder(

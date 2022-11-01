@@ -10,3 +10,7 @@ class ProjectNotFoundException : RuntimeException() {
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
 class UnAuthorizedProjectException : RuntimeException() {
 }
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND)
+class UserNotFoundException : RuntimeException() {
+}

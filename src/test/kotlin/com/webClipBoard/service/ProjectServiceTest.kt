@@ -11,7 +11,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @SpringBootTest
-internal class ProjectServiceTest {
+class ProjectServiceTest {
 
     @Autowired
     lateinit var projectService: ProjectService
@@ -37,11 +37,13 @@ internal class ProjectServiceTest {
 
     private val ownerName = "owner"
     private val strangerName = "stranger"
+    private val anotherStranger = "anotherStranger"
 
     @BeforeEach
     fun setUp() {
         createUser(ownerName)
         createUser(strangerName)
+        createUser(anotherStranger)
     }
 
     @Test
@@ -142,5 +144,47 @@ internal class ProjectServiceTest {
 
         val project = projectRepository.findById(projectId).get()
         assertEquals(project.name, "project_name")
+    }
+
+    @Test
+    fun addAccountToProject() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+
+        projectService.addAccountToProject(owner, projectId, stranger.id!!, true)
+
+        val projects = projectService.getProjects(stranger)
+        assertAll({
+            assertEquals(projects.size, 1)
+            assertEquals(projects[0].name, "owner_project")
+        })
+    }
+
+    @Test
+    fun `addAccountToProject throw ProjectNotFoundException if project not exists`() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val unavailableId = 987654321L
+
+        assertThrows(ProjectNotFoundException::class.java) {
+            projectService.addAccountToProject(owner, unavailableId, stranger.id!!, true)
+        }
+    }
+
+    @Test
+    fun `addAccountToProject only owner can add admin otherwise throws UnAuthorizedProjectException`() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val anotherStranger = getAccount(anotherStranger)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+
+        assertThrows(UnAuthorizedProjectException::class.java) {
+            projectService.addAccountToProject(anotherStranger, projectId, stranger.id!!, true)
+        }
     }
 }
