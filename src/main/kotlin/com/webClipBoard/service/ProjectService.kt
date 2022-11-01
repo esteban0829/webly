@@ -1,6 +1,7 @@
 package com.webClipBoard.service
 
 import com.webClipBoard.*
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -17,23 +18,27 @@ class ProjectService(
 
     @Transactional
     fun deleteProject(id: Long, account: Account) {
-        val project = projectRepository.findById(id).orElseThrow()
+        val project = projectRepository.findByIdOrNull(id)
+            ?: throw ProjectNotFoundException()
         val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
+            ?: throw UnAuthorizedProjectException()
         if (projectAccount.projectAccountType == ProjectAccountType.OWNER) {
             projectRepository.delete(project)
         } else {
-            throw Exception("no auth for delete account")
+            throw UnAuthorizedProjectException()
         }
     }
 
     @Transactional
     fun renameProject(id: Long, newName: String, account: Account) {
-        val project = projectRepository.findById(id).orElseThrow()
+        val project = projectRepository.findByIdOrNull(id)
+            ?: throw ProjectNotFoundException()
         val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
+            ?: throw UnAuthorizedProjectException()
         if (projectAccount.projectAccountType == ProjectAccountType.OWNER) {
             project.name = newName
         } else {
-            throw Exception("no auth for delete account")
+            throw UnAuthorizedProjectException()
         }
     }
 
