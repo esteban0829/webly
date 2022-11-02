@@ -7,19 +7,15 @@ import com.webClipBoard.service.ProjectService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
-@RestController("/api/v1")
+@RestController
+@RequestMapping("/api/v1/projects")
 class ProjectRestController(
     private val projectService: ProjectService
 ) {
 
-    @PostMapping("/projects")
+    @PostMapping
     fun createProject(
         @AuthenticationPrincipal account: Account,
         @RequestBody createProjectDTO: CreateProjectDTO,
@@ -29,14 +25,14 @@ class ProjectRestController(
                 .body(projectService.createProject(createProjectDTO, account))
     }
 
-    @GetMapping("/projects")
+    @GetMapping
     fun getProjects(
         @AuthenticationPrincipal account: Account,
     ): List<ProjectDTO> {
         return projectService.getProjects(account)
     }
 
-    @DeleteMapping("/projects/{id}")
+    @DeleteMapping("/{id}")
     fun deleteProject(
         @AuthenticationPrincipal account: Account,
         @PathVariable id: Long,
@@ -46,7 +42,7 @@ class ProjectRestController(
         return ResponseEntity.noContent().build()
     }
 
-    @PostMapping("/projects/{id}/rename")
+    @PostMapping("/{id}/rename")
     fun getProject(
         @AuthenticationPrincipal account: Account,
         @PathVariable id: Long,
@@ -57,7 +53,7 @@ class ProjectRestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PostMapping("/projects/{projectId}/accounts/{accountId}")
+    @PostMapping("/{projectId}/accounts/{accountId}")
     fun addAccount(
         @AuthenticationPrincipal account: Account,
         @PathVariable projectId: Long,
@@ -69,7 +65,7 @@ class ProjectRestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @DeleteMapping("/projects/{projectId}/accounts/{accountId}")
+    @DeleteMapping("/{projectId}/accounts/{accountId}")
     fun deleteAccount(
         @AuthenticationPrincipal account: Account,
         @PathVariable projectId: Long,
