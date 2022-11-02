@@ -187,4 +187,44 @@ class ProjectServiceTest {
             projectService.addAccountToProject(anotherStranger, projectId, stranger.id!!, true)
         }
     }
+
+    @Test
+    fun deleteAccountToProject() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+        projectService.addAccountToProject(owner, projectId, stranger.id!!, true)
+
+        projectService.deleteAccountToProject(owner, projectId, stranger.id!!)
+
+        val projects = projectService.getProjects(stranger)
+        assertEquals(projects.size, 0)
+    }
+
+    @Test
+    fun `deleteAccountToProject throw ProjectNotFoundException if project not exists`() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val unavailableId = 987654321L
+
+        assertThrows(ProjectNotFoundException::class.java) {
+            projectService.deleteAccountToProject(owner, unavailableId, stranger.id!!)
+        }
+    }
+
+    @Test
+    fun `deleteAccountToProject throw UnAuthorizedProjectException if account has no auth`() {
+        val owner = getAccount(ownerName)
+        val stranger = getAccount(strangerName)
+        val projectId = projectService.createProject(CreateProjectDTO(
+                name = "owner_project"
+        ), owner)
+        projectService.addAccountToProject(owner, projectId, stranger.id!!, true)
+
+        assertThrows(UnAuthorizedProjectException::class.java) {
+            projectService.deleteAccountToProject(stranger, projectId, owner.id!!)
+        }
+    }
 }
