@@ -30,3 +30,10 @@ interface ProjectRepository: JpaRepository<Project, Long> {
 interface ProjectAccountRepository: JpaRepository<ProjectAccount, Long> {
     fun findByAccountAndProject(account: Account, project: Project): ProjectAccount?
 }
+
+@Repository
+interface FolderRepository: JpaRepository<Folder, Long> {
+    fun findByProjectAndParent(project: Project, parent: Folder?): List<Folder>
+
+    fun findByIdAndProject(id: Long, project: Project): Folder?
+}

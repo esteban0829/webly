@@ -14,3 +14,7 @@ class UnAuthorizedProjectException : RuntimeException() {
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 class UserNotFoundException : RuntimeException() {
 }
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND)
+class FolderNotFoundException : RuntimeException() {
+}

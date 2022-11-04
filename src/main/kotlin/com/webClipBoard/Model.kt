@@ -143,11 +143,11 @@ data class ProjectAccount(
 data class Folder(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val name: String,
+    var name: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_folder_id")
-    val parent: Folder?,
+    var parent: Folder?,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")

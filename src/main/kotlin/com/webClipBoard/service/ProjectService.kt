@@ -14,7 +14,7 @@ class ProjectService(
 
     @Transactional
     fun getProjects(account: Account): List<ProjectDTO> {
-        return projectRepository.findByAccountId(account.id!!).map { it.toDto() }
+        return projectRepository.findByAccountId(account.id!!).map { it.toDTO() }
     }
 
     @Transactional
@@ -79,6 +79,7 @@ class ProjectService(
         ))
     }
 
+    @Transactional
     fun deleteAccountToProject(actorAccount: Account, projectId: Long, accountId: Long) {
         val project = projectRepository.findByIdOrNull(projectId)
             ?: throw ProjectNotFoundException()
@@ -93,6 +94,16 @@ class ProjectService(
         }
 
         projectAccountRepository.delete(targetProjectAccount)
+    }
+
+    @Transactional
+    fun getProjectAccountById(account: Account, projectId: Long): ProjectAccount {
+        val project = projectRepository.findByIdOrNull(projectId)
+            ?: throw ProjectNotFoundException()
+        val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
+            ?: throw UnAuthorizedProjectException()
+
+        return projectAccount
     }
 
 }

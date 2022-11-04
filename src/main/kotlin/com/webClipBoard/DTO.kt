@@ -48,7 +48,7 @@ class ProjectDTO(
     val name: String,
 )
 
-fun Project.toDto(): ProjectDTO {
+fun Project.toDTO(): ProjectDTO {
     return ProjectDTO(
         id = this.id!!,
         name = this.name,
@@ -62,3 +62,22 @@ class CreateProjectDTO(
         name = name,
     )
 }
+
+class FolderDTO(
+    val id: Long,
+    val name: String,
+    val parentId: Long?,
+)
+
+fun Folder.toDTO(): FolderDTO {
+    return FolderDTO(
+        id = id!!,
+        name = name,
+        parentId = parent?.id
+    )
+}
+
+class CreateFolderDTO(
+    val name: String,
+    val parentId: Long?,
+)
