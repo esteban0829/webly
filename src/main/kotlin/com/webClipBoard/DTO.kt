@@ -77,7 +77,34 @@ fun Folder.toDTO(): FolderDTO {
     )
 }
 
+class FolderDetailDTO(
+    val id: Long,
+    val name: String,
+    val parentId: Long?,
+    val childFolders: List<FolderDTO>,
+    val childLinks: List<LinkDTO>,
+)
+
 class CreateFolderDTO(
     val name: String,
     val parentId: Long?,
+)
+
+class LinkDTO(
+    val id: Long,
+    val name: String,
+    val url: String,
+)
+
+fun Link.toDTO(): LinkDTO {
+    return LinkDTO(
+        id = id!!,
+        name = name,
+        url = url,
+    )
+}
+
+class CreateLinkDTO(
+    val name: String,
+    val url: String,
 )

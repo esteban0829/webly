@@ -68,4 +68,31 @@ class FolderService(
         folder.parent = targetFolder
     }
 
+    @Transactional
+    fun getFolderDetail(account: Account, projectId: Long, folderId: Long): FolderDetailDTO {
+        val projectAccount = projectService.getProjectAccountById(account, projectId)
+        val folder = folderRepository.findByIdAndProject(folderId, projectAccount.project)
+            ?.run {
+                val childFolders = childFolders.map { it.toDTO() }
+                val childLinks = childLinks.map { it.toDTO() }
+
+                FolderDetailDTO(
+                    id = id!!,
+                    name = name,
+                    parentId = parent?.id,
+                    childFolders = childFolders,
+                    childLinks = childLinks,
+                )
+            }
+            ?: throw FolderNotFoundException()
+
+        return folder
+    }
+
+    fun getFolderIfAccountHasPermission(account: Account, projectId: Long, folderId: Long): Folder {
+        val projectAccount = projectService.getProjectAccountById(account, projectId)
+        return folderRepository.findByIdAndProject(folderId, projectAccount.project)
+            ?: throw FolderNotFoundException()
+    }
+
 }

@@ -152,18 +152,24 @@ data class Folder(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     val project: Project,
+
+    @OneToMany(mappedBy = "parent")
+    val childFolders: List<Folder> = ArrayList(),
+
+    @OneToMany(mappedBy = "folder")
+    val childLinks: List<Link> = ArrayList(),
 ) : BaseTimeEntity()
 
 @Entity
 data class Link(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val name: String,
+    var name: String,
     val url: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folder_id")
-    val folder: Folder,
+    var folder: Folder? = null,
 ) : BaseTimeEntity()
 
 enum class ActionType(val value: String) {

@@ -3,6 +3,7 @@ package com.webClipBoard.controller
 import com.webClipBoard.Account
 import com.webClipBoard.FolderDTO
 import com.webClipBoard.CreateFolderDTO
+import com.webClipBoard.FolderDetailDTO
 import com.webClipBoard.service.FolderService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.websocket.server.PathParam
 
 @RestController
 @RequestMapping("/api/v1/projects/{projectId}/folders")
@@ -31,6 +33,17 @@ class FolderRestController(
         return ResponseEntity
             .ok()
             .body(folderService.getRootFolders(account, projectId, parentId))
+    }
+
+    @GetMapping("/{folderId}")
+    fun getFolderDetail(
+        @PathVariable projectId: Long,
+        @PathVariable folderId: Long,
+        @AuthenticationPrincipal account: Account,
+    ): ResponseEntity<FolderDetailDTO> {
+        return ResponseEntity
+            .ok()
+            .body(folderService.getFolderDetail(account, projectId, folderId))
     }
 
     @PostMapping

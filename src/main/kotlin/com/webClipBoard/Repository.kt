@@ -37,3 +37,7 @@ interface FolderRepository: JpaRepository<Folder, Long> {
 
     fun findByIdAndProject(id: Long, project: Project): Folder?
 }
+
+@Repository
+interface LinkRepository: JpaRepository<Link, Long> {
+}

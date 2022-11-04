@@ -18,3 +18,7 @@ class UserNotFoundException : RuntimeException() {
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 class FolderNotFoundException : RuntimeException() {
 }
+
+@ResponseStatus(code = HttpStatus.NOT_FOUND)
+class LinkNotFoundException : RuntimeException() {
+}
