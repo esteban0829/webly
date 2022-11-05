@@ -1,14 +1,16 @@
 package com.webClipBoard.service
 
-import com.webClipBoard.*
-import org.junit.jupiter.api.Test
-
+import com.webClipBoard.CreateProjectDTO
+import com.webClipBoard.ProjectNotFoundException
+import com.webClipBoard.ProjectRepository
+import com.webClipBoard.UnAuthorizedProjectException
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import javax.transaction.Transactional
+import org.springframework.test.annotation.DirtiesContext
 
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
 class ProjectServiceTest {
 

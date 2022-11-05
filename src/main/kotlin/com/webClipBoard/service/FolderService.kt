@@ -73,7 +73,7 @@ class FolderService(
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         val folder = folderRepository.findByIdAndProject(folderId, projectAccount.project)
             ?.run {
-                val childFolders = folderRepository.findByParent(this).map { it.toDTO() }
+                val childFolders = childFolders.map { it.toDTO() }
                 val childLinks = childLinks.map { it.toDTO() }
 
                 FolderDetailDTO(

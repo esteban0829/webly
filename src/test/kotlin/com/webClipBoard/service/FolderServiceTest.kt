@@ -2,14 +2,13 @@ package com.webClipBoard.service
 
 import com.webClipBoard.*
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.test.annotation.DirtiesContext
 
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
 class FolderServiceTest {
 
