@@ -34,8 +34,8 @@ interface ProjectAccountRepository: JpaRepository<ProjectAccount, Long> {
 @Repository
 interface FolderRepository: JpaRepository<Folder, Long> {
     fun findByProjectAndParent(project: Project, parent: Folder?): List<Folder>
-
     fun findByIdAndProject(id: Long, project: Project): Folder?
+    fun findByParent(parent: Folder?): List<Folder>
 }
 
 @Repository

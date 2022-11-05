@@ -153,9 +153,6 @@ data class Folder(
     @JoinColumn(name = "project_id")
     val project: Project,
 
-    @OneToMany(mappedBy = "parent")
-    var childFolders: List<Folder> = ArrayList(),
-
     @OneToMany(mappedBy = "folder")
     var childLinks: List<Link> = ArrayList(),
 ) : BaseTimeEntity()
