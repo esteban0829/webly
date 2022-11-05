@@ -22,3 +22,7 @@ class FolderNotFoundException : RuntimeException() {
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 class LinkNotFoundException : RuntimeException() {
 }
+
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+class NotAllowedMoveToChildFolderException : RuntimeException() {
+}

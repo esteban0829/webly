@@ -65,6 +65,9 @@ class FolderService(
             folderRepository.findByIdAndProject(targetParentId, projectAccount.project)
                 ?: throw FolderNotFoundException()
         }
+        if (targetFolder != null && targetFolder.isDescendantOf(folder)) {
+            throw NotAllowedMoveToChildFolderException()
+        }
         folder.parent = targetFolder
     }
 
@@ -89,6 +92,7 @@ class FolderService(
         return folder
     }
 
+    @Transactional
     fun getFolderIfAccountHasPermission(account: Account, projectId: Long, folderId: Long): Folder {
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         return folderRepository.findByIdAndProject(folderId, projectAccount.project)

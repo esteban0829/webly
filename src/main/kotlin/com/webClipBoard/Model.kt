@@ -158,7 +158,15 @@ data class Folder(
 
     @OneToMany(mappedBy = "folder")
     val childLinks: MutableList<Link> = ArrayList(),
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    fun isDescendantOf(folder: Folder): Boolean {
+        return when(parent) {
+            null -> false
+            folder -> true
+            else -> parent!!.isDescendantOf(folder)
+        }
+    }
+}
 
 @Entity
 data class Link(

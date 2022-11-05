@@ -31,11 +31,6 @@ class FolderServiceTest {
     }
 
     @Test
-    fun getRootFolders() {
-
-    }
-
-    @Test
     fun createFolder() {
         val rootParentId = null
         val folderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
@@ -79,6 +74,35 @@ class FolderServiceTest {
 
     @Test
     fun moveFolder() {
+        val parentFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "root",
+            parentId = null
+        ))
+        val childFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "child",
+            parentId = parentFolderId
+        ))
+
+        folderService.moveFolder(owner, projectId, childFolderId, null)
+
+        val folders = folderService.getFolders(owner, projectId, null)
+        assertEquals(2, folders.size)
+    }
+
+    @Test
+    fun `moveFolder can not move to child folder`() {
+        val parentFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "root",
+            parentId = null
+        ))
+        val childFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "child",
+            parentId = parentFolderId
+        ))
+
+        assertThrows(NotAllowedMoveToChildFolderException::class.java) {
+            folderService.moveFolder(owner, projectId, parentFolderId, childFolderId)
+        }
     }
 
     @Test
