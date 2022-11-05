@@ -2,22 +2,36 @@ package com.webClipBoard.controller
 
 import com.webClipBoard.Account
 import com.webClipBoard.CreateLinkDTO
+import com.webClipBoard.LinkDTO
 import com.webClipBoard.service.LinkService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("/api/v1/projects/{projectId}/folders/{folderId}")
+@RequestMapping("/api/v1/projects/{projectId}/folders/{folderId}/links")
 class LinkRestController(
     private val linkService: LinkService,
 ) {
+
+    @GetMapping("/{linkId}")
+    fun getLink(
+        @PathVariable projectId: Long,
+        @PathVariable folderId: Long,
+        @PathVariable linkId: Long,
+        @AuthenticationPrincipal account: Account,
+    ): ResponseEntity<LinkDTO> {
+        return ResponseEntity
+            .ok()
+            .body(linkService.getLink(account, projectId, folderId, linkId))
+    }
 
     @PostMapping
     fun createLink(

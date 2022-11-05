@@ -1,6 +1,9 @@
 package com.webClipBoard.service
 
 import com.webClipBoard.*
+import com.webClipBoard.service.testService.AccountType
+import com.webClipBoard.service.testService.TestAccountService
+import com.webClipBoard.service.testService.TestProjectService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,14 +23,12 @@ class FolderServiceTest {
     lateinit var folderService: FolderService
 
     lateinit var owner: Account
-    lateinit var project: Project
-    private var projectId: Long = -1
+    private var projectId: Long = 0
 
     @BeforeEach
     fun init() {
         owner = testAccountService.createUser(AccountType.OWNER)
-        project = testProjectService.createProject(owner)
-        projectId = project.id!!
+        projectId = testProjectService.createProject(owner).id!!
     }
 
     @Test

@@ -94,6 +94,7 @@ class LinkDTO(
     val id: Long,
     val name: String,
     val url: String,
+    val folderId: Long,
 )
 
 fun Link.toDTO(): LinkDTO {
@@ -101,6 +102,7 @@ fun Link.toDTO(): LinkDTO {
         id = id!!,
         name = name,
         url = url,
+        folderId = folder!!.id!!
     )
 }
 

@@ -44,6 +44,7 @@ class LinkService(
         link.name = newName
     }
 
+    @Transactional
     fun moveLink(account: Account, projectId: Long, folderId: Long, linkId: Long, targetFolderId: Long) {
         val folder = folderService.getFolderIfAccountHasPermission(account, projectId, folderId)
         val link = linkRepository.findByIdOrNull(linkId)
@@ -52,5 +53,15 @@ class LinkService(
         }
         val targetFolder = folderService.getFolderIfAccountHasPermission(account, projectId, targetFolderId)
         link.folder = targetFolder
+    }
+
+    @Transactional
+    fun getLink(account: Account, projectId: Long, folderId: Long, linkId: Long): LinkDTO {
+        val folder = folderService.getFolderIfAccountHasPermission(account, projectId, folderId)
+        val link = linkRepository.findByIdOrNull(linkId)
+        if (link == null || link.folder != folder) {
+            throw LinkNotFoundException()
+        }
+        return link.toDTO()
     }
 }
