@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class LinkService(
     private val folderService: FolderService,
     private val linkRepository: LinkRepository,
+    private val actionLogService: ActionLogService,
 ) {
 
     @Transactional
@@ -21,6 +22,11 @@ class LinkService(
         )
         linkRepository.save(link)
 
+        actionLogService.logCreateLink(
+            project = folder.project,
+            linkId = link.id!!,
+        )
+
         return link.id!!
     }
 
@@ -31,6 +37,12 @@ class LinkService(
         if (link == null || link.folder != folder) {
             throw LinkNotFoundException()
         }
+
+        actionLogService.logDeleteLink(
+            project = folder.project,
+            linkId = link.id!!,
+        )
+
         linkRepository.delete(link)
     }
 
@@ -41,6 +53,14 @@ class LinkService(
         if (link == null || link.folder != folder) {
             throw LinkNotFoundException()
         }
+
+        actionLogService.logRenameLink(
+            project = folder.project,
+            linkId = link.id!!,
+            oldName = link.name,
+            newName = newName,
+        )
+
         link.name = newName
     }
 
@@ -52,6 +72,14 @@ class LinkService(
             throw LinkNotFoundException()
         }
         val targetFolder = folderService.getFolderIfAccountHasPermission(account, projectId, targetFolderId)
+
+        actionLogService.logMoveLink(
+            project = folder.project,
+            linkId = link.id!!,
+            fromFolderId = folderId,
+            toFolderId = targetFolderId,
+        )
+
         link.folder = targetFolder
     }
 

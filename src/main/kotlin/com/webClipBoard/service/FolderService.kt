@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 class FolderService(
     private val projectService: ProjectService,
     private val folderRepository: FolderRepository,
+    private val actionLogService: ActionLogService,
 ) {
 
     @Transactional
@@ -35,6 +36,11 @@ class FolderService(
         )
         folderRepository.save(folder)
 
+        actionLogService.logCreateFolder(
+            project = projectAccount.project,
+            folderId = folder.id!!
+        )
+
         return folder.id!!
     }
 
@@ -44,6 +50,13 @@ class FolderService(
         val folder = folderRepository.findByIdAndProject(folderId, projectAccount.project)
             ?: throw FolderNotFoundException()
 
+        actionLogService.logRenameFolder(
+            project = projectAccount.project,
+            folderId = folder.id!!,
+            oldName = folder.name,
+            newName = newName
+        )
+
         folder.name = newName
     }
 
@@ -52,6 +65,11 @@ class FolderService(
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         val folder = folderRepository.findByIdAndProject(folderId, projectAccount.project)
             ?: throw FolderNotFoundException()
+
+        actionLogService.logDeleteFolder(
+            project = projectAccount.project,
+            folderId = folder.id!!,
+        )
 
         folderRepository.delete(folder)
     }
@@ -68,6 +86,14 @@ class FolderService(
         if (targetFolder != null && targetFolder.isDescendantOf(folder)) {
             throw NotAllowedMoveToChildFolderException()
         }
+
+        actionLogService.logMoveFolder(
+            project = projectAccount.project,
+            folderId = folder.id!!,
+            fromFolderId = folder.parent?.id,
+            toFolderId = targetFolder?.id
+        )
+
         folder.parent = targetFolder
     }
 

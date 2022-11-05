@@ -93,9 +93,9 @@ data class File(
 @MappedSuperclass
 abstract class BaseTimeEntity(
     @CreationTimestamp
-    open val createDateTime: OffsetDateTime = OffsetDateTime.now(),
+    val createDateTime: OffsetDateTime = OffsetDateTime.now(),
     @UpdateTimestamp
-    open val updateDateTime: OffsetDateTime? = null,
+    val updateDateTime: OffsetDateTime? = null,
 )
 
 @Entity
@@ -181,14 +181,14 @@ data class Link(
 ) : BaseTimeEntity()
 
 enum class ActionType(val value: String) {
-    CreateLink(Values.CreateLink),
-    DeleteLink(Values.DeleteLink),
-    RenameLink(Values.RenameLink),
-    MoveLink(Values.MoveLink),
-    CreateFolder(Values.CreateFolder),
-    DeleteFolder(Values.DeleteFolder),
-    RenameFolder(Values.RenameFolder),
-    MoveFolder(Values.MoveFolder);
+    CREATE_LINK(Values.CreateLink),
+    DELETE_LINK(Values.DeleteLink),
+    RENAME_LINK(Values.RenameLink),
+    MOVE_LINK(Values.MoveLink),
+    CREATE_FOLDER(Values.CreateFolder),
+    DELETE_FOLDER(Values.DeleteFolder),
+    RENAME_FOLDER(Values.RenameFolder),
+    MOVE_FOLDER(Values.MoveFolder);
 
     class Values {
         companion object {
@@ -209,93 +209,77 @@ enum class ActionType(val value: String) {
 @DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
 abstract class ActionLog(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    open val id: Long? = null,
+    val id: Long? = null,
 
     @Column(name = "action_type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
-    open val actionType: ActionType? = null
+    val actionType: ActionType? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    val project: Project
 ) : BaseTimeEntity()
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.CreateLink)
 class CreateLinkActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "link_id")
-    val link: Link,
-) : ActionLog()
+    project: Project,
+    val linkId: Long,
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.DeleteLink)
 class DeleteLinkActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "link_id")
-    val link: Link,
-) : ActionLog()
+    project: Project,
+    val linkId: Long,
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.RenameLink)
 class RenameLinkActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "link_id")
-    val link: Link,
+    project: Project,
+    val linkId: Long,
     val oldName: String,
     val newName: String,
-) : ActionLog()
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.MoveLink)
 class MoveLinkActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "link_id")
-    val link: Link,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_folder_id")
-    val fromFolder: Folder,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_folder_id")
-    val toFolder: Folder
-) : ActionLog()
+    project: Project,
+    val linkId: Long,
+    val fromFolderId: Long?,
+    val toFolderId: Long?,
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.CreateFolder)
 class CreateFolderActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
-    val folder: Folder,
-) : ActionLog()
+    project: Project,
+    val folderId: Long,
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.DeleteFolder)
 class DeleteFolderActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
-    val folder: Folder,
-) : ActionLog()
+    project: Project,
+    val folderId: Long,
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.RenameFolder)
 class RenameFolderActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
-    val folder: Folder,
+    project: Project,
+    val folderId: Long,
     val oldName: String,
     val newName: String,
-) : ActionLog()
+) : ActionLog(project = project)
 
 @Entity
 @DiscriminatorValue(value = ActionType.Values.MoveFolder)
 class MoveFolderActionLog(
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folder_id")
-    val folder: Folder,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_folder_id")
-    val fromFolder: Folder,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_folder_id")
-    val toFolder: Folder
-) : ActionLog()
+    project: Project,
+    val folderId: Long,
+    val fromFolderId: Long?,
+    val toFolderId: Long?,
+) : ActionLog(project = project)

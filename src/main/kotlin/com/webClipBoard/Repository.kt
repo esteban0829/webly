@@ -41,3 +41,10 @@ interface FolderRepository: JpaRepository<Folder, Long> {
 @Repository
 interface LinkRepository: JpaRepository<Link, Long> {
 }
+
+@Repository
+interface ActionLogRepository: JpaRepository<ActionLog, Long> {
+    @Query("select max(a.id) from ActionLog a")
+    fun findMaxIdOrNull(): Long?
+    fun findByIdAfterOrderById(id: Long)
+}
