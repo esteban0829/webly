@@ -56,8 +56,7 @@ class LinkRestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-
-    @PostMapping("/{linkId}/rename")
+    @PostMapping("/{linkId}/move")
     fun moveLink(
         @PathVariable projectId: Long,
         @PathVariable folderId: Long,

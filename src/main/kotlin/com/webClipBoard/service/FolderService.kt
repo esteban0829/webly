@@ -12,7 +12,7 @@ class FolderService(
 ) {
 
     @Transactional
-    fun getRootFolders(account: Account, projectId: Long, parentId: Long?): List<FolderDTO> {
+    fun getFolders(account: Account, projectId: Long, parentId: Long?): List<FolderDTO> {
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         val parentFolder = parentId?.let {
             folderRepository.findByIdOrNull(it)

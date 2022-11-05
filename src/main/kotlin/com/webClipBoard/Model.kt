@@ -154,10 +154,10 @@ data class Folder(
     val project: Project,
 
     @OneToMany(mappedBy = "parent")
-    val childFolders: List<Folder> = ArrayList(),
+    var childFolders: List<Folder> = ArrayList(),
 
     @OneToMany(mappedBy = "folder")
-    val childLinks: List<Link> = ArrayList(),
+    var childLinks: List<Link> = ArrayList(),
 ) : BaseTimeEntity()
 
 @Entity
