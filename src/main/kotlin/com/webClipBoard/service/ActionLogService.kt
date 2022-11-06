@@ -7,15 +7,18 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ActionLogService(
     private val actionLogRepository: ActionLogRepository,
+    private val projectService: ProjectService,
 ) {
 
     @Transactional
-    fun getActionLogs(account: Account, projectId: Long, lastReadActionId: Long) {
-        val logs = actionLogRepository.findByIdAfterOrderById(lastReadActionId)
+    fun getActionLogs(account: Account, projectId: Long, lastReadActionId: Long): List<ActionLogDTO> {
+        val projectAccount = projectService.getProjectAccountById(account, projectId)
+        return actionLogRepository.findByIdAfterAndProjectOrderById(lastReadActionId, projectAccount.project)
+            .map { it.toDTO() }
     }
 
     @Transactional
-    fun getLastReadActionId(account: Account, projectId: Long): Long {
+    fun recentActionId(account: Account, projectId: Long): Long {
         return actionLogRepository.findMaxIdOrNull() ?: -1
     }
 

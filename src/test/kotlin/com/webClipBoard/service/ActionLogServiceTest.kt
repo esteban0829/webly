@@ -18,8 +18,6 @@ class ActionLogServiceTest {
     @Autowired
     lateinit var actionLogService: ActionLogService
     @Autowired
-    lateinit var actionLogRepository: ActionLogRepository
-    @Autowired
     lateinit var testAccountService: TestAccountService
     @Autowired
     lateinit var testProjectService: TestProjectService
@@ -47,14 +45,15 @@ class ActionLogServiceTest {
     @Test
     fun logCreateLink() {
         initFolderForLinkTest()
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         val linkId = linkService.createLink(owner, projectId, folderId, CreateLinkDTO(
             name = "link",
             url = "url",
         ))
 
-        val logs = actionLogRepository.findAll().filterIsInstance<CreateLinkActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.CREATE_LINK, logs[0].actionType)
         assertEquals(linkId, logs[0].linkId)
     }
 
@@ -66,11 +65,12 @@ class ActionLogServiceTest {
             url = "url",
         ))
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         linkService.deleteLink(owner, projectId, folderId, linkId)
 
-        val logs = actionLogRepository.findAll().filterIsInstance<DeleteLinkActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.DELETE_LINK, logs[0].actionType)
         assertEquals(linkId, logs[0].linkId)
     }
 
@@ -83,11 +83,12 @@ class ActionLogServiceTest {
         ))
         val newName = "new_name"
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         linkService.renameLink(owner, projectId, folderId, linkId, newName)
 
-        val logs = actionLogRepository.findAll().filterIsInstance<RenameLinkActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.RENAME_LINK, logs[0].actionType)
         assertEquals(linkId, logs[0].linkId)
         assertEquals("old_name", logs[0].oldName)
         assertEquals("new_name", logs[0].newName)
@@ -101,11 +102,12 @@ class ActionLogServiceTest {
             url = "url",
         ))
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         linkService.moveLink(owner, projectId, folderId, linkId, targetFolderId)
 
-        val logs = actionLogRepository.findAll().filterIsInstance<MoveLinkActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.MOVE_LINK, logs[0].actionType)
         assertEquals(linkId, logs[0].linkId)
         assertEquals(folderId, logs[0].fromFolderId)
         assertEquals(targetFolderId, logs[0].toFolderId)
@@ -113,15 +115,16 @@ class ActionLogServiceTest {
 
     @Test
     fun logCreateFolder() {
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         val rootParentId = null
         val folderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
             name = "root",
             parentId = rootParentId
         ))
 
-        val logs = actionLogRepository.findAll().filterIsInstance<CreateFolderActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.CREATE_FOLDER, logs[0].actionType)
         assertEquals(folderId, logs[0].folderId)
     }
 
@@ -132,11 +135,12 @@ class ActionLogServiceTest {
             parentId = null
         ))
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         folderService.renameFolder(owner, projectId, folderId, "new_name")
 
-        val logs = actionLogRepository.findAll().filterIsInstance<RenameFolderActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.RENAME_FOLDER, logs[0].actionType)
         assertEquals(folderId, logs[0].folderId)
         assertEquals("old_name", logs[0].oldName)
         assertEquals("new_name", logs[0].newName)
@@ -149,11 +153,12 @@ class ActionLogServiceTest {
             parentId = null
         ))
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         folderService.deleteFolder(owner, projectId, folderId)
 
-        val logs = actionLogRepository.findAll().filterIsInstance<DeleteFolderActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.DELETE_FOLDER, logs[0].actionType)
         assertEquals(folderId, logs[0].folderId)
     }
 
@@ -168,11 +173,12 @@ class ActionLogServiceTest {
             parentId = parentFolderId
         ))
 
+        val lastLogId = actionLogService.recentActionId(owner, projectId)
         folderService.moveFolder(owner, projectId, childFolderId, null)
 
-        val logs = actionLogRepository.findAll().filterIsInstance<MoveFolderActionLog>()
+        val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertEquals(1, logs.size)
-        assertEquals(projectId, logs[0].project.id)
+        assertEquals(ActionType.MOVE_FOLDER, logs[0].actionType)
         assertEquals(childFolderId, logs[0].folderId)
         assertEquals(parentFolderId, logs[0].fromFolderId)
         assertEquals(null, logs[0].toFolderId)
