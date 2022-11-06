@@ -21,6 +21,11 @@ spring:
   h2:
     console:
       enabled: true
+  devtools:
+    restart:
+      enabled: true
+      poll-interval: 2
+      quiet-period: 1
 
 cloud:
   aws:

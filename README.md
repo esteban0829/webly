@@ -17,3 +17,8 @@ password:
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
+
+## How to use Spring Boot Devtools
+- Check `Settings > Advanced Settings > Allow auto-make to start...`
+- Check `Settings > Build, Execution, Deployment > Compiler > Build project automatically`
+- **Before intellj 2021 you should have changed registry**
