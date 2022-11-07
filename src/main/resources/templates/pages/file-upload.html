@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+
+<th:block layout:fragment="head">
+    <title>File Upload</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script type="text/javascript" th:src="@{/js/file-upload.js}"></script>
+</th:block>
+<body>
+<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+    <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+    <div id="file-input-error-msg"></div>
+    <form id="file-upload-form" method="post">
+        <div><input id="file-input" type="file"/></div>
+        <div><input type="submit"/></div>
+    </form>
+</div>
+<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
+</body>
+</html>

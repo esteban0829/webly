@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+
+<th:block layout:fragment="head">
+
+</th:block>
+<div layout:fragment="content" class="content">
+
+    <h1>Login</h1> <hr>
+
+    <form action="/login" method="POST">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        email : <input type="text" name="username"> <br>
+        password : <input type="password" name="password"> <br>
+        <button type="submit">Login</button>
+    </form> <br>
+
+    <a href="/signup">Go to join! →</a>
+</div>
+</html>

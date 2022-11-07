@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+
+<th:block layout:fragment="head">
+    <title>sign up</title>
+</th:block>
+<body>
+<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
+
+<div layout:fragment="content" class="content">
+    <h1>Sign Up</h1> <hr>
+
+    <form th:action="@{/user}" method="POST">
+        email : <input type="text" name="email"> <br>
+        password : <input type="password" name="password"> <br>
+        userId : <input type="text" name="userId"> <br>
+        userName : <input type="text" name="userName"> <br>
+        <input type="radio" name="role" value="ADMIN"> admin
+        <input type="radio" name="role" value="USER" checked="checked"> user <br>
+        <button type="submit">Join</button>
+    </form> <br>
+
+    <a href="/login">Go to login →</a>
+</div>
+<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
+</body>
+</html>

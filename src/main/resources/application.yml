@@ -26,6 +26,11 @@ spring:
       enabled: true
       poll-interval: 2
       quiet-period: 1
+  thymeleaf:
+    cache: false #dev only
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template: true
 
 cloud:
   aws:
