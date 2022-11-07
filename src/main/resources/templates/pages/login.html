@@ -3,21 +3,30 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default_layout}">
-
-<th:block layout:fragment="head">
-
-</th:block>
 <div layout:fragment="content" class="content">
-
-    <h1>Login</h1> <hr>
-
-    <form action="/login" method="POST">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        email : <input type="text" name="username"> <br>
-        password : <input type="password" name="password"> <br>
-        <button type="submit">Login</button>
-    </form> <br>
-
-    <a href="/signup">Go to join! →</a>
+    <div class="container mt-sm-5 mb-5">
+        <div class="row">
+            <form class="col-md-5 mx-auto border border- rounded" action="/login" method="POST">
+                <div class="border-bottom mb-3">
+                    <p class="fs-3">Login</p>
+                </div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <div class="mb-2">
+                    <label for="emailInput" class="form-label">email</label>
+                    <input type="text" class="form-control" name="username" id="emailInput">
+                </div>
+                <div class="mb-3">
+                    <label for="passwordInput" class="form-label">password</label>
+                    <input type="text" class="form-control" name="password" id="passwordInput">
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Login</button>
+                </div>
+                <div class="mb-3">
+                    <a href="/signup" class="link-secondary">Go to join! →</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </html>

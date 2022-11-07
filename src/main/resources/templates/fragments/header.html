@@ -1,5 +1,28 @@
 <html lagn="en" xmlns:th="http://www.thymeleaf.org">
 <div th:fragment="headerFragment">
-    <h1>Header Section</h1>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand">Webly</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Memo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Project</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <a href="/login" class="nav-link active">Login</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </div>
 </html>
