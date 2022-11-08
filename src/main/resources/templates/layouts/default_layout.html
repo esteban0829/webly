@@ -4,14 +4,14 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8" />
-    <title>thymeleaf layout</title>
+    <title>webly</title>
     <meta name="viewport" content="width=device-width, maximum-scale=1.0, minimum-scale=1, user-scalable=yes,initial-scale=1.0" />
     <th:block th:replace="fragments/css :: cssFragment"/>
     <th:block th:replace="fragments/script :: scriptFragment"/>
 </head>
 <body>
-<th:block th:replace="fragments/header :: headerFragment"/>
-<th:block layout:fragment="content"></th:block>
-<th:block th:replace="fragments/footer :: footerFragment"/>
+    <th:block th:replace="fragments/header :: headerFragment"/>
+    <th:block layout:fragment="content"></th:block>
+    <th:block th:replace="fragments/footer :: footerFragment"/>
 </body>
 </html>

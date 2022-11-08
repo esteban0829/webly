@@ -3,28 +3,47 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default_layout}">
-
-<th:block layout:fragment="head">
-    <title>sign up</title>
-</th:block>
 <body>
-<th:block layout:fragment="header" th:include="@{/fragments/header}"></th:block>
-
 <div layout:fragment="content" class="content">
-    <h1>Sign Up</h1> <hr>
-
-    <form th:action="@{/user}" method="POST">
-        email : <input type="text" name="email"> <br>
-        password : <input type="password" name="password"> <br>
-        userId : <input type="text" name="userId"> <br>
-        userName : <input type="text" name="userName"> <br>
-        <input type="radio" name="role" value="ADMIN"> admin
-        <input type="radio" name="role" value="USER" checked="checked"> user <br>
-        <button type="submit">Join</button>
-    </form> <br>
-
-    <a href="/login">Go to login →</a>
+    <div class="container mt-sm-5 mb-5">
+        <div class="row">
+            <form class="col-md-5 mx-auto border rounded" th:action="@{/user}" method="POST">
+                <div class="border-bottom mb-3">
+                    <p class="fs-3">Sign Up</p>
+                </div>
+                <div class="mb-2">
+                    <label for="emailInput" class="form-label">email</label>
+                    <input type="text" class="form-control" name="email" id="emailInput">
+                </div>
+                <div class="mb-2">
+                    <label for="passwordInput" class="form-label">password</label>
+                    <input type="password" class="form-control" name="password" id="passwordInput">
+                </div>
+                <div class="mb-2">
+                    <label for="userIdInput" class="form-label">userId</label>
+                    <input type="text" class="form-control" name="userId" id="userIdInput">
+                </div>
+                <div class="mb-2">
+                    <label for="userNameInput" class="form-label">userName</label>
+                    <input type="text" class="form-control" name="userName" id="userNameInput">
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="role" value="ADMIN" id="adminRadio">
+                    <label for="adminRadio" class="form-check-label">admin</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="role" value="USER" checked="checked" id="userRadio">
+                    <label for="userRadio" class="form-check-label">user</label>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Join</button>
+                </div>
+                <div class="mb-3">
+                    <a href="/login" class="link-secondary">Go to login →</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<th:block layout:fragment="footer" th:include="@{/fragments/footer}"></th:block>
 </body>
 </html>
