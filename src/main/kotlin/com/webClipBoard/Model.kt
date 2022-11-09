@@ -15,7 +15,7 @@ enum class Role(val permissionLevel: Long, val authority: String) {
 }
 
 @Entity
-data class Account(
+class Account(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val userId: String,
@@ -72,7 +72,7 @@ enum class FileStatus {
 }
 
 @Entity
-data class File(
+class File(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val name: String,
@@ -99,7 +99,7 @@ abstract class BaseTimeEntity(
 )
 
 @Entity
-data class Project(
+class Project(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     var name: String,
@@ -112,7 +112,7 @@ enum class ProjectAccountType {
 }
 
 @Entity
-data class ProjectAccount(
+class ProjectAccount(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
@@ -140,7 +140,7 @@ data class ProjectAccount(
 }
 
 @Entity
-data class Folder(
+class Folder(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     var name: String,
@@ -169,7 +169,7 @@ data class Folder(
 }
 
 @Entity
-data class Link(
+class Link(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     var name: String,

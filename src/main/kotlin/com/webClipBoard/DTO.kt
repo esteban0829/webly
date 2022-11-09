@@ -24,7 +24,7 @@ data class FileCreateDTO(
     val fileName: String,
 )
 
-class FileDTO(
+data class FileDTO(
     val id: Long,
     val name: String,
     val filePath: String,
@@ -33,7 +33,7 @@ class FileDTO(
     val updateDateTime: OffsetDateTime?,
 )
 
-class FileUserDTO(
+data class FileUserDTO(
     val id: Long,
     val name: String,
     val filePath: String,
@@ -43,7 +43,7 @@ class FileUserDTO(
     val presignedUrl: String,
 )
 
-class ProjectDTO(
+data class ProjectDTO(
     val id: Long,
     val name: String,
 )
@@ -55,7 +55,7 @@ fun Project.toDTO(): ProjectDTO {
     )
 }
 
-class CreateProjectDTO(
+data class CreateProjectDTO(
     val name: String,
 ) {
     fun toEntity() = Project(
@@ -63,7 +63,7 @@ class CreateProjectDTO(
     )
 }
 
-class FolderDTO(
+data class FolderDTO(
     val id: Long,
     val name: String,
     val parentId: Long?,
@@ -77,7 +77,7 @@ fun Folder.toDTO(): FolderDTO {
     )
 }
 
-class FolderDetailDTO(
+data class FolderDetailDTO(
     val id: Long,
     val name: String,
     val parentId: Long?,
@@ -85,12 +85,12 @@ class FolderDetailDTO(
     val childLinks: List<LinkDTO>,
 )
 
-class CreateFolderDTO(
+data class CreateFolderDTO(
     val name: String,
     val parentId: Long?,
 )
 
-class LinkDTO(
+data class LinkDTO(
     val id: Long,
     val name: String,
     val url: String,
@@ -106,12 +106,12 @@ fun Link.toDTO(): LinkDTO {
     )
 }
 
-class CreateLinkDTO(
+data class CreateLinkDTO(
     val name: String,
     val url: String,
 )
 
-class ActionLogDTO(
+data class ActionLogDTO(
     val actionType: ActionType,
     val linkId: Long? = null,
     val folderId: Long? = null,
