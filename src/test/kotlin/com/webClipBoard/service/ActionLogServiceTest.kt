@@ -4,7 +4,7 @@ import com.webClipBoard.*
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import com.webClipBoard.service.testService.TestProjectService
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,9 +52,9 @@ class ActionLogServiceTest {
         ))
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.CREATE_LINK, logs[0].actionType)
-        assertEquals(linkId, logs[0].linkId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.CREATE_LINK)
+        assertThat(logs[0].linkId).isEqualTo(linkId)
     }
 
     @Test
@@ -69,9 +69,9 @@ class ActionLogServiceTest {
         linkService.deleteLink(owner, projectId, folderId, linkId)
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.DELETE_LINK, logs[0].actionType)
-        assertEquals(linkId, logs[0].linkId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.DELETE_LINK)
+        assertThat(logs[0].linkId).isEqualTo(linkId)
     }
 
     @Test
@@ -87,11 +87,11 @@ class ActionLogServiceTest {
         linkService.renameLink(owner, projectId, folderId, linkId, newName)
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.RENAME_LINK, logs[0].actionType)
-        assertEquals(linkId, logs[0].linkId)
-        assertEquals("old_name", logs[0].oldName)
-        assertEquals("new_name", logs[0].newName)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.RENAME_LINK)
+        assertThat(logs[0].linkId).isEqualTo(linkId)
+        assertThat(logs[0].oldName).isEqualTo("old_name")
+        assertThat(logs[0].newName).isEqualTo("new_name")
     }
 
     @Test
@@ -106,11 +106,11 @@ class ActionLogServiceTest {
         linkService.moveLink(owner, projectId, folderId, linkId, targetFolderId)
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.MOVE_LINK, logs[0].actionType)
-        assertEquals(linkId, logs[0].linkId)
-        assertEquals(folderId, logs[0].fromFolderId)
-        assertEquals(targetFolderId, logs[0].toFolderId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.MOVE_LINK)
+        assertThat(logs[0].linkId).isEqualTo(linkId)
+        assertThat(logs[0].fromFolderId).isEqualTo(folderId)
+        assertThat(logs[0].toFolderId).isEqualTo(targetFolderId)
     }
 
     @Test
@@ -123,9 +123,9 @@ class ActionLogServiceTest {
         ))
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.CREATE_FOLDER, logs[0].actionType)
-        assertEquals(folderId, logs[0].folderId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.CREATE_FOLDER)
+        assertThat(logs[0].folderId).isEqualTo(folderId)
     }
 
     @Test
@@ -139,11 +139,11 @@ class ActionLogServiceTest {
         folderService.renameFolder(owner, projectId, folderId, "new_name")
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.RENAME_FOLDER, logs[0].actionType)
-        assertEquals(folderId, logs[0].folderId)
-        assertEquals("old_name", logs[0].oldName)
-        assertEquals("new_name", logs[0].newName)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.RENAME_FOLDER)
+        assertThat(logs[0].folderId).isEqualTo(folderId)
+        assertThat(logs[0].oldName).isEqualTo("old_name")
+        assertThat(logs[0].newName).isEqualTo("new_name")
     }
 
     @Test
@@ -157,9 +157,9 @@ class ActionLogServiceTest {
         folderService.deleteFolder(owner, projectId, folderId)
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.DELETE_FOLDER, logs[0].actionType)
-        assertEquals(folderId, logs[0].folderId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.DELETE_FOLDER)
+        assertThat(logs[0].folderId).isEqualTo(folderId)
     }
 
     @Test
@@ -177,11 +177,11 @@ class ActionLogServiceTest {
         folderService.moveFolder(owner, projectId, childFolderId, null)
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
-        assertEquals(1, logs.size)
-        assertEquals(ActionType.MOVE_FOLDER, logs[0].actionType)
-        assertEquals(childFolderId, logs[0].folderId)
-        assertEquals(parentFolderId, logs[0].fromFolderId)
-        assertEquals(null, logs[0].toFolderId)
+        assertThat(logs).hasSize(1)
+        assertThat(logs[0].actionType).isEqualTo(ActionType.MOVE_FOLDER, )
+        assertThat(logs[0].folderId).isEqualTo(childFolderId)
+        assertThat(logs[0].fromFolderId).isEqualTo(parentFolderId)
+        assertThat(logs[0].toFolderId).isNull()
     }
 
 }

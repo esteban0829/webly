@@ -7,10 +7,12 @@ import com.webClipBoard.LinkNotFoundException
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import com.webClipBoard.service.testService.TestProjectService
+import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
@@ -49,10 +51,10 @@ class LinkServiceTest {
         ))
 
         val link = linkService.getLink(owner, projectId, folderId, linkId)
-        assertEquals(linkId, link.id)
-        assertEquals("link", link.name)
-        assertEquals("url", link.url)
-        assertEquals(folderId, link.folderId)
+        assertThat(link.id).isEqualTo(linkId)
+        assertThat(link.name).isEqualTo("link")
+        assertThat(link.url).isEqualTo("url")
+        assertThat(link.folderId).isEqualTo(folderId)
     }
 
     @Test
@@ -64,7 +66,7 @@ class LinkServiceTest {
 
         linkService.deleteLink(owner, projectId, folderId, linkId)
 
-        assertThrows(LinkNotFoundException::class.java) {
+        assertThrows<LinkNotFoundException> {
             linkService.getLink(owner, projectId, folderId, linkId)
         }
     }
@@ -80,9 +82,9 @@ class LinkServiceTest {
         linkService.renameLink(owner, projectId, folderId, linkId, newName)
 
         val link = linkService.getLink(owner, projectId, folderId, linkId)
-        assertEquals(linkId, link.id)
-        assertEquals(newName, link.name)
-        assertEquals("url", link.url)
+        assertThat(link.id).isEqualTo(linkId)
+        assertThat(link.name).isEqualTo(newName)
+        assertThat(link.url).isEqualTo("url")
     }
 
     @Test
@@ -95,6 +97,6 @@ class LinkServiceTest {
         linkService.moveLink(owner, projectId, folderId, linkId, targetFolderId)
 
         val link = linkService.getLink(owner, projectId, targetFolderId, linkId)
-        assertEquals(targetFolderId, link.folderId)
+        assertThat(link.folderId).isEqualTo(targetFolderId)
     }
 }

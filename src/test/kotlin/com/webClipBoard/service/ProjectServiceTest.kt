@@ -6,8 +6,10 @@ import com.webClipBoard.ProjectRepository
 import com.webClipBoard.UnAuthorizedProjectException
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
+import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
@@ -37,8 +39,8 @@ class ProjectServiceTest {
 
         val projects = projectService.getProjects(owner)
 
-        assertEquals(projects.size, 1)
-        assertEquals(projects[0].name, "owner_project")
+        assertThat(projects).hasSize(1)
+        assertThat(projects[0].name).isEqualTo("owner_project")
     }
 
     @Test
@@ -50,8 +52,8 @@ class ProjectServiceTest {
 
         projectService.deleteProject(projectId, owner)
 
-        val exists = projectRepository.existsById(projectId)
-        assertFalse(exists)
+        val projects = projectRepository.findAll()
+        assertThat(projects).isEmpty()
     }
 
     @Test
@@ -62,7 +64,7 @@ class ProjectServiceTest {
             name = "owner_project"
         ), owner)
 
-        assertThrows(UnAuthorizedProjectException::class.java) {
+        assertThrows<UnAuthorizedProjectException> {
             projectService.deleteProject(projectId, stranger)
         }
     }
@@ -71,7 +73,8 @@ class ProjectServiceTest {
     fun `deleteProject throw ProjectNotFoundException if project not exists`() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val unavailableId = 987654321L
-        assertThrows(ProjectNotFoundException::class.java) {
+
+        assertThrows<ProjectNotFoundException> {
             projectService.deleteProject(unavailableId, owner)
         }
     }
@@ -86,7 +89,7 @@ class ProjectServiceTest {
         projectService.renameProject(projectId, "new_name", owner)
 
         val project = projectRepository.findById(projectId).get()
-        assertEquals(project.name, "new_name")
+        assertThat(project.name).isEqualTo("new_name")
     }
 
     @Test
@@ -97,7 +100,7 @@ class ProjectServiceTest {
                 name = "owner_project"
         ), owner)
 
-        assertThrows(UnAuthorizedProjectException::class.java) {
+        assertThrows<UnAuthorizedProjectException> {
             projectService.renameProject(projectId, "new_name", stranger)
         }
     }
@@ -106,7 +109,7 @@ class ProjectServiceTest {
     fun `renameProject throw ProjectNotFoundException if project not exists`() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val unavailableId = 987654321L
-        assertThrows(ProjectNotFoundException::class.java) {
+        assertThrows<ProjectNotFoundException> {
             projectService.renameProject(unavailableId, "new_project", owner)
         }
     }
@@ -120,7 +123,7 @@ class ProjectServiceTest {
         ), owner)
 
         val project = projectRepository.findById(projectId).get()
-        assertEquals(project.name, "project_name")
+        assertThat(project.name).isEqualTo("project_name")
     }
 
     @Test
@@ -134,10 +137,8 @@ class ProjectServiceTest {
         projectService.addAccountToProject(owner, projectId, stranger.id!!, true)
 
         val projects = projectService.getProjects(stranger)
-        assertAll({
-            assertEquals(projects.size, 1)
-            assertEquals(projects[0].name, "owner_project")
-        })
+        assertThat(projects).hasSize(1)
+        assertEquals(projects[0].name, "owner_project")
     }
 
     @Test
@@ -146,7 +147,7 @@ class ProjectServiceTest {
         val stranger = testAccountService.createUser(AccountType.STRANGER)
         val unavailableId = 987654321L
 
-        assertThrows(ProjectNotFoundException::class.java) {
+        assertThrows<ProjectNotFoundException> {
             projectService.addAccountToProject(owner, unavailableId, stranger.id!!, true)
         }
     }
@@ -160,7 +161,7 @@ class ProjectServiceTest {
                 name = "owner_project"
         ), owner)
 
-        assertThrows(UnAuthorizedProjectException::class.java) {
+        assertThrows<UnAuthorizedProjectException> {
             projectService.addAccountToProject(anotherStranger, projectId, stranger.id!!, true)
         }
     }
@@ -177,7 +178,7 @@ class ProjectServiceTest {
         projectService.deleteAccountToProject(owner, projectId, stranger.id!!)
 
         val projects = projectService.getProjects(stranger)
-        assertEquals(projects.size, 0)
+        assertThat(projects).isEmpty()
     }
 
     @Test
@@ -186,7 +187,7 @@ class ProjectServiceTest {
         val stranger = testAccountService.createUser(AccountType.STRANGER)
         val unavailableId = 987654321L
 
-        assertThrows(ProjectNotFoundException::class.java) {
+        assertThrows<ProjectNotFoundException> {
             projectService.deleteAccountToProject(owner, unavailableId, stranger.id!!)
         }
     }
@@ -200,7 +201,7 @@ class ProjectServiceTest {
         ), owner)
         projectService.addAccountToProject(owner, projectId, stranger.id!!, true)
 
-        assertThrows(UnAuthorizedProjectException::class.java) {
+        assertThrows<UnAuthorizedProjectException> {
             projectService.deleteAccountToProject(stranger, projectId, owner.id!!)
         }
     }

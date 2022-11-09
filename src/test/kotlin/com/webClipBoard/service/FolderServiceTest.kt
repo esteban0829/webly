@@ -4,9 +4,11 @@ import com.webClipBoard.*
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import com.webClipBoard.service.testService.TestProjectService
+import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
@@ -40,10 +42,10 @@ class FolderServiceTest {
         ))
 
         val folders = folderService.getFolders(owner, projectId, rootParentId)
-        assertEquals(1, folders.size)
-        assertEquals(folderId, folders[0].id)
-        assertEquals("root", folders[0].name)
-        assertEquals(rootParentId, folders[0].parentId)
+        assertThat(folders).hasSize(1)
+        assertThat(folders[0].id).isEqualTo(folderId)
+        assertThat(folders[0].name).isEqualTo("root")
+        assertThat(folders[0].parentId).isEqualTo(rootParentId)
     }
 
     @Test
@@ -56,7 +58,7 @@ class FolderServiceTest {
         folderService.renameFolder(owner, projectId, folderId, "new_name")
 
         val folder = folderService.getFolderDetail(owner, projectId, folderId)
-        assertEquals(folder.name, "new_name")
+        assertThat(folder.name).isEqualTo("new_name")
     }
 
     @Test
@@ -68,7 +70,7 @@ class FolderServiceTest {
 
         folderService.deleteFolder(owner, projectId, folderId)
 
-        assertThrows(FolderNotFoundException::class.java) {
+        assertThrows<FolderNotFoundException> {
             folderService.getFolderDetail(owner, projectId, folderId)
         }
     }
@@ -87,7 +89,7 @@ class FolderServiceTest {
         folderService.moveFolder(owner, projectId, childFolderId, null)
 
         val folders = folderService.getFolders(owner, projectId, null)
-        assertEquals(2, folders.size)
+        assertThat(folders).hasSize(2)
     }
 
     @Test
@@ -101,7 +103,7 @@ class FolderServiceTest {
             parentId = parentFolderId
         ))
 
-        assertThrows(NotAllowedMoveToChildFolderException::class.java) {
+        assertThrows<NotAllowedMoveToChildFolderException> {
             folderService.moveFolder(owner, projectId, parentFolderId, childFolderId)
         }
     }
@@ -119,13 +121,13 @@ class FolderServiceTest {
 
         val folder = folderService.getFolderDetail(owner, projectId, parentFolderId)
 
-        assertEquals(parentFolderId, folder.id)
-        assertEquals("root", folder.name)
-        assertEquals(null, folder.parentId)
-        assertEquals(1, folder.childFolders.size)
-        assertEquals(childFolderId, folder.childFolders[0].id)
-        assertEquals("child", folder.childFolders[0].name)
-        assertEquals(parentFolderId, folder.childFolders[0].parentId)
+        assertThat(folder.id).isEqualTo(parentFolderId)
+        assertThat(folder.name).isEqualTo("root")
+        assertThat(folder.parentId).isNull()
+        assertThat(folder.childFolders).hasSize(1)
+        assertThat(folder.childFolders[0].id).isEqualTo(childFolderId)
+        assertThat(folder.childFolders[0].name).isEqualTo("child")
+        assertThat(folder.childFolders[0].parentId).isEqualTo(parentFolderId)
     }
 
     @Test
@@ -136,7 +138,7 @@ class FolderServiceTest {
         ))
         val stranger = testAccountService.createUser(AccountType.STRANGER)
 
-        assertThrows(UnAuthorizedProjectException::class.java) {
+        assertThrows<UnAuthorizedProjectException> {
             folderService.getFolderIfAccountHasPermission(stranger, projectId, folderId)
         }
     }
