@@ -19,7 +19,7 @@ class FolderService(
             folderRepository.findByIdOrNull(it)
                 ?: throw FolderNotFoundException()
         }
-        return folderRepository.findByProjectAndParent(projectAccount.project, parentFolder).map { it.toDTO() }
+        return folderRepository.findByProjectAndParent(projectAccount.project, parentFolder).map { FolderDTO.of(it) }
     }
 
     @Transactional
@@ -102,8 +102,8 @@ class FolderService(
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         val folder = folderRepository.findByIdAndProject(folderId, projectAccount.project)
             ?.run {
-                val childFolders = childFolders.map { it.toDTO() }
-                val childLinks = childLinks.map { it.toDTO() }
+                val childFolders = childFolders.map { FolderDTO.of(it) }
+                val childLinks = childLinks.map { LinkDTO.of(it) }
 
                 FolderDetailDTO(
                     id = id!!,

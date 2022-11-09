@@ -46,13 +46,13 @@ data class FileUserDTO(
 data class ProjectDTO(
     val id: Long,
     val name: String,
-)
-
-fun Project.toDTO(): ProjectDTO {
-    return ProjectDTO(
-        id = this.id!!,
-        name = this.name,
-    )
+) {
+    companion object {
+        fun of(project: Project) = ProjectDTO(
+            id = project.id!!,
+            name = project.name,
+        )
+    }
 }
 
 data class CreateProjectDTO(
@@ -67,14 +67,14 @@ data class FolderDTO(
     val id: Long,
     val name: String,
     val parentId: Long?,
-)
-
-fun Folder.toDTO(): FolderDTO {
-    return FolderDTO(
-        id = id!!,
-        name = name,
-        parentId = parent?.id
-    )
+) {
+    companion object {
+        fun of(folder: Folder) = FolderDTO(
+            id = folder.id!!,
+            name = folder.name,
+            parentId = folder.parent?.id
+        )
+    }
 }
 
 data class FolderDetailDTO(
@@ -95,15 +95,15 @@ data class LinkDTO(
     val name: String,
     val url: String,
     val folderId: Long,
-)
-
-fun Link.toDTO(): LinkDTO {
-    return LinkDTO(
-        id = id!!,
-        name = name,
-        url = url,
-        folderId = folder!!.id!!
-    )
+) {
+    companion object {
+        fun of(link: Link) = LinkDTO(
+            id = link.id!!,
+            name = link.name,
+            url = link.url,
+            folderId = link.folder!!.id!!
+        )
+    }
 }
 
 data class CreateLinkDTO(
@@ -119,36 +119,40 @@ data class ActionLogDTO(
     val newName: String? = null,
     val fromFolderId: Long? = null,
     val toFolderId: Long? = null,
-)
-
-fun ActionLog.toDTO(): ActionLogDTO = when (this) {
-    is CreateLinkActionLog -> ActionLogDTO(ActionType.CREATE_LINK, linkId = linkId)
-    is DeleteLinkActionLog -> ActionLogDTO(ActionType.DELETE_LINK, linkId = linkId)
-    is RenameLinkActionLog -> ActionLogDTO(
-        ActionType.RENAME_LINK,
-        linkId = linkId,
-        oldName = oldName,
-        newName = newName,
-    )
-    is MoveLinkActionLog -> ActionLogDTO(
-        ActionType.MOVE_LINK,
-        linkId = linkId,
-        fromFolderId = fromFolderId,
-        toFolderId = toFolderId,
-    )
-    is CreateFolderActionLog -> ActionLogDTO(ActionType.CREATE_FOLDER, folderId = folderId)
-    is DeleteFolderActionLog -> ActionLogDTO(ActionType.DELETE_FOLDER, folderId = folderId)
-    is RenameFolderActionLog -> ActionLogDTO(
-        ActionType.RENAME_FOLDER,
-        folderId = folderId,
-        oldName = oldName,
-        newName = newName,
-    )
-    is MoveFolderActionLog -> ActionLogDTO(
-        ActionType.MOVE_FOLDER,
-        folderId = folderId,
-        fromFolderId = fromFolderId,
-        toFolderId = toFolderId,
-    )
-    else -> throw Exception("unknown Action Type")
+) {
+    companion object {
+        fun of(actionLog: ActionLog): ActionLogDTO = actionLog.run {
+            when (this) {
+                is CreateLinkActionLog -> ActionLogDTO(ActionType.CREATE_LINK, linkId = linkId)
+                is DeleteLinkActionLog -> ActionLogDTO(ActionType.DELETE_LINK, linkId = linkId)
+                is RenameLinkActionLog -> ActionLogDTO(
+                        ActionType.RENAME_LINK,
+                        linkId = linkId,
+                        oldName = oldName,
+                        newName = newName,
+                )
+                is MoveLinkActionLog -> ActionLogDTO(
+                        ActionType.MOVE_LINK,
+                        linkId = linkId,
+                        fromFolderId = fromFolderId,
+                        toFolderId = toFolderId,
+                )
+                is CreateFolderActionLog -> ActionLogDTO(ActionType.CREATE_FOLDER, folderId = folderId)
+                is DeleteFolderActionLog -> ActionLogDTO(ActionType.DELETE_FOLDER, folderId = folderId)
+                is RenameFolderActionLog -> ActionLogDTO(
+                        ActionType.RENAME_FOLDER,
+                        folderId = folderId,
+                        oldName = oldName,
+                        newName = newName,
+                )
+                is MoveFolderActionLog -> ActionLogDTO(
+                        ActionType.MOVE_FOLDER,
+                        folderId = folderId,
+                        fromFolderId = fromFolderId,
+                        toFolderId = toFolderId,
+                )
+                else -> throw Exception("unknown Action Type")
+            }
+        }
+    }
 }

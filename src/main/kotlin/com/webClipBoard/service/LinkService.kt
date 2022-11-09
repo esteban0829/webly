@@ -90,6 +90,6 @@ class LinkService(
         if (link == null || link.folder != folder) {
             throw LinkNotFoundException()
         }
-        return link.toDTO()
+        return LinkDTO.of(link)
     }
 }

@@ -14,7 +14,7 @@ class ProjectService(
 
     @Transactional
     fun getProjects(account: Account): List<ProjectDTO> {
-        return projectRepository.findByAccountId(account.id!!).map { it.toDTO() }
+        return projectRepository.findByAccountId(account.id!!).map { ProjectDTO.of(it) }
     }
 
     @Transactional
