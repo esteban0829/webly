@@ -52,27 +52,4 @@ class ProjectRestController(
 
         return ResponseEntity(HttpStatus.OK)
     }
-
-    @PostMapping("/{projectId}/accounts/{accountId}")
-    fun addAccount(
-        @AuthenticationPrincipal account: Account,
-        @PathVariable projectId: Long,
-        @PathVariable accountId: Long,
-        @RequestBody isAdmin: Boolean,
-    ): ResponseEntity<Unit> {
-        projectService.addAccountToProject(account, projectId, accountId, isAdmin)
-
-        return ResponseEntity(HttpStatus.OK)
-    }
-
-    @DeleteMapping("/{projectId}/accounts/{accountId}")
-    fun deleteAccount(
-        @AuthenticationPrincipal account: Account,
-        @PathVariable projectId: Long,
-        @PathVariable accountId: Long,
-    ): ResponseEntity<Unit> {
-        projectService.deleteAccountToProject(account, projectId, accountId)
-
-        return ResponseEntity(HttpStatus.OK)
-    }
 }
