@@ -28,7 +28,8 @@ class SecurityConfig(
                 .ignoringAntMatchers("/h2-console/**", "/swagger-ui/**")
             .and()
             .authorizeRequests()
-            .antMatchers("/login", "/signup", "/user", "/hello", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**",).permitAll()
+            .antMatchers("/login", "/signup", "/user", "/hello", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**",
+                    "/new-project", "/project").permitAll()
             .antMatchers("/", "/api/v1/files/**").hasAuthority(Role.USER.authority) // USER, ADMIN can access
             .antMatchers("/admin").hasAuthority(Role.ADMIN.authority) // only ADMIN can access
             .anyRequest().authenticated() // any request excluding above should have any authentication
