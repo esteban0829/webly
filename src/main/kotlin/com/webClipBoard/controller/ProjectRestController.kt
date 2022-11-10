@@ -32,6 +32,16 @@ class ProjectRestController(
         return projectService.getProjects(account)
     }
 
+    @GetMapping("/{id}")
+    fun getProjectById(
+        @AuthenticationPrincipal account: Account,
+        @PathVariable id: Long,
+    ): ResponseEntity<ProjectDTO> {
+       return ResponseEntity
+               .ok()
+               .body(projectService.getProjectById(account, id))
+    }
+
     @DeleteMapping("/{id}")
     fun deleteProject(
         @AuthenticationPrincipal account: Account,

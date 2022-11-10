@@ -44,6 +44,19 @@ class ProjectServiceTest {
     }
 
     @Test
+    fun getProjectById() {
+        val owner = testAccountService.createUser(AccountType.OWNER)
+        val projectId = projectService.createProject(CreateProjectDTO(
+            name = "owner_project"
+        ), owner)
+
+        val project = projectService.getProjectById(owner, projectId)
+
+        assertThat(project.id).isEqualTo(projectId)
+        assertThat(project.name).isEqualTo("owner_project")
+    }
+
+    @Test
     fun deleteProject() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val projectId = projectService.createProject(CreateProjectDTO(

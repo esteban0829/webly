@@ -17,6 +17,16 @@ class ProjectService(
     }
 
     @Transactional
+    fun getProjectById(account: Account, id: Long): ProjectDTO {
+        val project = projectRepository.findByIdOrNull(id)
+            ?: throw ProjectNotFoundException()
+        val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
+            ?: throw UnAuthorizedProjectException()
+
+        return ProjectDTO.of(project)
+    }
+
+    @Transactional
     fun deleteProject(id: Long, account: Account) {
         val project = projectRepository.findByIdOrNull(id)
             ?: throw ProjectNotFoundException()
