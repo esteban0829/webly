@@ -29,7 +29,7 @@ class SecurityConfig(
             .and()
             .authorizeRequests()
             .antMatchers("/login", "/signup", "/user", "/hello", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**",
-                    "/new-project", "/project").permitAll()
+                    "/new-project", "/project", "/project-setting").permitAll()
             .antMatchers("/", "/api/v1/files/**").hasAuthority(Role.USER.authority) // USER, ADMIN can access
             .antMatchers("/admin").hasAuthority(Role.ADMIN.authority) // only ADMIN can access
             .anyRequest().authenticated() // any request excluding above should have any authentication

@@ -95,10 +95,10 @@ class ProjectAccountServiceTest {
         val projectId = projectService.createProject(CreateProjectDTO(
                 name = "owner_project"
         ), owner)
-        projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(stranger.email, true))
+        val projectAccountId = projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(stranger.email, true))
 
         assertThrows<UnAuthorizedProjectException> {
-            projectAccountService.deleteAccountToProject(stranger, projectId, owner.id!!)
+            projectAccountService.deleteAccountToProject(stranger, projectId, projectAccountId)
         }
     }
 

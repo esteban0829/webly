@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+<head>
+    <title>File Upload</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script type="text/javascript" th:src="@{/js/project-setting.js}"></script>
+</head>
+
+<body>
+<div layout:fragment="content" class="content">
+    <div class="container mx-auto my-4">
+        <div class="mb-4">
+            <h1>Project setting</h1>
+        </div>
+        <div class="form">
+            <div class="row mb-3">
+                <label for="nameInput" class="col-sm-1 col-form-label">name</label>
+                <div class="col-sm-11">
+                    <input type="text" class="form-control" id="nameInput" th:value="${project.name}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary btn" id="changeNameButton">Change name</button>
+            </div>
+        </div>
+        <h3>Members</h3>
+        <table class="table" id="projectAccountsTable">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Auth</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+            <tbody>
+                <tr th:each="projectAccount : ${projectAccounts}">
+                    <td th:text="${projectAccount.id}"/>
+                    <td th:text="${projectAccount.accountName}"/>
+                    <td th:text="${projectAccount.accountType}"/>
+                    <td>
+                        <button class="btn btn-danger" th:data-project-account-id="${projectAccount.id}">Delete member</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row mb-5">
+            <label for="emailInput" class="col-sm-1 col-form-label">Email</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="emailInput">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-secondary" id="addMemberButton">Add member</button>
+            </div>
+        </div>
+        <button class="btn btn-danger" id="deleteProjectButton">Delete project</button>
+    </div>
+</div>
+</body>
+</html>

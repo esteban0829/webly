@@ -30,10 +30,9 @@ class ProjectAccountRestController(
         @AuthenticationPrincipal account: Account,
         @PathVariable projectId: Long,
         @RequestBody createProjectAccountDTO: CreateProjectAccountDTO,
-    ): ResponseEntity<Unit> {
-        projectAccountService.addAccountToProject(account, projectId, createProjectAccountDTO)
-
-        return ResponseEntity(HttpStatus.OK)
+    ): ResponseEntity<Long> {
+        return ResponseEntity.ok()
+                .body(projectAccountService.addAccountToProject(account, projectId, createProjectAccountDTO))
     }
 
     @DeleteMapping("/{accountId}")

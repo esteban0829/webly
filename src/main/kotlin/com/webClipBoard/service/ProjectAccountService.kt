@@ -13,7 +13,7 @@ class ProjectAccountService(
 ) {
 
     @Transactional
-    fun addAccountToProject(account: Account, projectId: Long, createProjectAccountDTO: CreateProjectAccountDTO) {
+    fun addAccountToProject(account: Account, projectId: Long, createProjectAccountDTO: CreateProjectAccountDTO): Long {
         val project = projectRepository.findByIdOrNull(projectId)
                 ?: throw ProjectNotFoundException()
         val targetAccount = accountRepository.findByEmail(createProjectAccountDTO.email)
@@ -23,22 +23,20 @@ class ProjectAccountService(
         if (!projectAccount.canAddAccountToProject(createProjectAccountDTO.isAdmin)) {
             throw UnAuthorizedProjectException()
         }
-        projectAccountRepository.save(ProjectAccount(
+        return projectAccountRepository.save(ProjectAccount(
                 project = project,
                 account = targetAccount,
                 projectAccountType = createProjectAccountDTO.accountType()
-        ))
+        )).id!!
     }
 
     @Transactional
-    fun deleteAccountToProject(actorAccount: Account, projectId: Long, accountId: Long) {
+    fun deleteAccountToProject(actorAccount: Account, projectId: Long, projectAccountId: Long) {
         val project = projectRepository.findByIdOrNull(projectId)
                 ?: throw ProjectNotFoundException()
-        val targetAccount = accountRepository.findByIdOrNull(accountId)
-                ?: throw UserNotFoundException()
         val projectAccount = projectAccountRepository.findByAccountAndProject(actorAccount, project)
                 ?: throw UnAuthorizedProjectException()
-        val targetProjectAccount = projectAccountRepository.findByAccountAndProject(targetAccount, project)
+        val targetProjectAccount = projectAccountRepository.findByIdOrNull(projectAccountId)
                 ?: throw UserNotFoundException()
         if (!projectAccount.canDeleteAccountToProject(targetProjectAccount)) {
             throw UnAuthorizedProjectException()
