@@ -2,6 +2,7 @@ package com.webClipBoard.controller
 
 import com.webClipBoard.Account
 import com.webClipBoard.CreateProjectDTO
+import com.webClipBoard.ProjectAccountDTO
 import com.webClipBoard.ProjectDTO
 import com.webClipBoard.service.ProjectAccountService
 import com.webClipBoard.service.ProjectService
@@ -11,12 +12,22 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/v1/projects/{id}")
+@RequestMapping("/api/v1/projects/{id}/{projectId}/accounts")
 class ProjectAccountRestController(
     private val projectAccountService: ProjectAccountService,
 ) {
 
-    @PostMapping("/{projectId}/accounts/{accountId}")
+    @GetMapping
+    fun getAccounts(
+        @AuthenticationPrincipal account: Account,
+        @PathVariable projectId: Long,
+    ): ResponseEntity<List<ProjectAccountDTO>> {
+        return ResponseEntity
+                .ok()
+                .body(projectAccountService.getProjectAccounts(account, projectId))
+    }
+
+    @PostMapping("/{accountId}")
     fun addAccount(
         @AuthenticationPrincipal account: Account,
         @PathVariable projectId: Long,
@@ -28,7 +39,7 @@ class ProjectAccountRestController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @DeleteMapping("/{projectId}/accounts/{accountId}")
+    @DeleteMapping("/{accountId}")
     fun deleteAccount(
         @AuthenticationPrincipal account: Account,
         @PathVariable projectId: Long,

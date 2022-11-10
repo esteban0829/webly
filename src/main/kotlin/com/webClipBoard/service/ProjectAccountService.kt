@@ -52,4 +52,12 @@ class ProjectAccountService(
         projectAccountRepository.delete(targetProjectAccount)
     }
 
+    @Transactional
+    fun getProjectAccounts(actorAccount: Account, projectId: Long): List<ProjectAccountDTO> {
+        val project = projectRepository.findByIdOrNull(projectId)
+                ?: throw ProjectNotFoundException()
+
+        return projectAccountRepository.findByProject(project).map { ProjectAccountDTO.of(it) }
+    }
+
 }

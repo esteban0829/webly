@@ -29,6 +29,8 @@ interface ProjectRepository: JpaRepository<Project, Long> {
 @Repository
 interface ProjectAccountRepository: JpaRepository<ProjectAccount, Long> {
     fun findByAccountAndProject(account: Account, project: Project): ProjectAccount?
+
+    fun findByProject(project: Project): List<ProjectAccount>
 }
 
 @Repository

@@ -5,10 +5,11 @@ import com.webClipBoard.AccountRepository
 import com.webClipBoard.Role
 import org.springframework.stereotype.Service;
 
-enum class AccountType(name: String) {
-    OWNER("owner"),
-    STRANGER("stranger"),
-    ANOTHER_STRANGER("another_stranger")
+enum class AccountType {
+    OWNER,
+    STRANGER,
+    ANOTHER_STRANGER,
+    ;
 }
 
 @Service

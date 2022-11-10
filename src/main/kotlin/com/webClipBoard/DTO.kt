@@ -55,6 +55,20 @@ data class ProjectDTO(
     }
 }
 
+data class ProjectAccountDTO(
+    val id: Long,
+    val accountName: String,
+    val accountType: ProjectAccountType,
+) {
+    companion object {
+        fun of(projectAccount: ProjectAccount) = ProjectAccountDTO(
+            id = projectAccount.id!!,
+            accountName = projectAccount.account.name,
+            accountType = projectAccount.projectAccountType,
+        )
+    }
+}
+
 data class CreateProjectDTO(
     val name: String,
 ) {
