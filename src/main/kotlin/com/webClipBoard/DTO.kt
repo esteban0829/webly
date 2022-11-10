@@ -69,6 +69,19 @@ data class ProjectAccountDTO(
     }
 }
 
+data class CreateProjectAccountDTO(
+    val email: String,
+    val isAdmin: Boolean,
+) {
+    fun accountType(): ProjectAccountType {
+        return if (isAdmin) {
+            ProjectAccountType.ADMIN
+        } else {
+            ProjectAccountType.USER
+        }
+    }
+}
+
 data class CreateProjectDTO(
     val name: String,
 ) {

@@ -1,9 +1,6 @@
 package com.webClipBoard.service
 
-import com.webClipBoard.CreateProjectDTO
-import com.webClipBoard.ProjectAccountType
-import com.webClipBoard.ProjectNotFoundException
-import com.webClipBoard.UnAuthorizedProjectException
+import com.webClipBoard.*
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
@@ -12,7 +9,9 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
 class ProjectAccountServiceTest {
 
@@ -31,7 +30,7 @@ class ProjectAccountServiceTest {
                 name = "owner_project"
         ), owner)
 
-        projectAccountService.addAccountToProject(owner, projectId, stranger.id!!, true)
+        projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(stranger.email, true))
 
         val projects = projectService.getProjects(stranger)
         assertThat(projects).hasSize(1)
@@ -45,7 +44,7 @@ class ProjectAccountServiceTest {
         val unavailableId = 987654321L
 
         assertThrows<ProjectNotFoundException> {
-            projectAccountService.addAccountToProject(owner, unavailableId, stranger.id!!, true)
+            projectAccountService.addAccountToProject(owner, unavailableId, CreateProjectAccountDTO(stranger.email, true))
         }
     }
 
@@ -59,7 +58,7 @@ class ProjectAccountServiceTest {
         ), owner)
 
         assertThrows<UnAuthorizedProjectException> {
-            projectAccountService.addAccountToProject(anotherStranger, projectId, stranger.id!!, true)
+            projectAccountService.addAccountToProject(anotherStranger, projectId, CreateProjectAccountDTO(stranger.email, true))
         }
     }
 
@@ -70,7 +69,7 @@ class ProjectAccountServiceTest {
         val projectId = projectService.createProject(CreateProjectDTO(
                 name = "owner_project"
         ), owner)
-        projectAccountService.addAccountToProject(owner, projectId, stranger.id!!, true)
+        projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(stranger.email, true))
 
         projectAccountService.deleteAccountToProject(owner, projectId, stranger.id!!)
 
@@ -96,7 +95,7 @@ class ProjectAccountServiceTest {
         val projectId = projectService.createProject(CreateProjectDTO(
                 name = "owner_project"
         ), owner)
-        projectAccountService.addAccountToProject(owner, projectId, stranger.id!!, true)
+        projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(stranger.email, true))
 
         assertThrows<UnAuthorizedProjectException> {
             projectAccountService.deleteAccountToProject(stranger, projectId, owner.id!!)
