@@ -14,10 +14,10 @@ class ProjectAccountService(
 
     @Transactional
     fun addAccountToProject(account: Account, projectId: Long, createProjectAccountDTO: CreateProjectAccountDTO): Long {
-        val project = projectRepository.findByIdOrNull(projectId)
-                ?: throw ProjectNotFoundException()
+        val project = projectRepository.findById(projectId)
+            .getElseThrowNotFoundException(projectId)
         val targetAccount = accountRepository.findByEmail(createProjectAccountDTO.email)
-                .orElseThrow(::UserNotFoundException)
+            .getElseThrowNotFoundException(createProjectAccountDTO.email)
         val projectAccount = projectAccountRepository.findByAccountAndProject(account, project)
                 ?: throw UnAuthorizedProjectException()
         if (!projectAccount.canAddAccountToProject(createProjectAccountDTO.isAdmin)) {

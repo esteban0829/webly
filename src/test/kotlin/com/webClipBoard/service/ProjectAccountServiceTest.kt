@@ -38,12 +38,12 @@ class ProjectAccountServiceTest {
     }
 
     @Test
-    fun `addAccountToProject throw ProjectNotFoundException if project not exists`() {
+    fun `addAccountToProject throw NotFoundException if project not exists`() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val stranger = testAccountService.createUser(AccountType.STRANGER)
         val unavailableId = 987654321L
 
-        assertThrows<ProjectNotFoundException> {
+        assertThrows<NotFoundException> {
             projectAccountService.addAccountToProject(owner, unavailableId, CreateProjectAccountDTO(stranger.email, true))
         }
     }

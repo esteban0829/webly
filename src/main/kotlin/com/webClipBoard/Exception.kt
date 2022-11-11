@@ -11,6 +11,9 @@ class ProjectNotFoundException : RuntimeException() {
 class UnAuthorizedProjectException : RuntimeException() {
 }
 
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+class NotFoundException(val entityName: String, val entityId: Any) : RuntimeException()
+
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 class UserNotFoundException : RuntimeException() {
 }
