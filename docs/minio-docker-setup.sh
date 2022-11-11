@@ -9,6 +9,8 @@ docker run \
   --name minio-app \
   quay.io/minio/minio server /data --console-address ":9001"
 
+sleep 3
+
 docker run --net=host -it --entrypoint=/bin/sh minio/mc -c \
 "\
 mc config host add minio-server http://127.0.0.1:9000 user password; \
