@@ -25,6 +25,7 @@
                     <td th:text="${project.id}"/>
                     <td th:text="${project.name}"/>
                     <td>
+                        <a th:href="|/project-page?projectId=${project.id}|" class="btn btn-primary">Go project</a>
                         <a th:href="|/project-setting?projectId=${project.id}|" class="btn btn-secondary">Setting</a>
                     </td>
                 </tr>

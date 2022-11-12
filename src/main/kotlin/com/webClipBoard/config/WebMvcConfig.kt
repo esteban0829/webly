@@ -15,5 +15,6 @@ class WebMvcConfig: WebMvcConfigurer {
         registry.addViewController("/file-upload").setViewName("pages/file-upload")
         registry.addViewController("/hello").setViewName("pages/hello")
         registry.addViewController("/new-project").setViewName("pages/projects/new-project")
+        registry.addViewController("/project-page").setViewName("pages/projects/project-page")
     }
 }
