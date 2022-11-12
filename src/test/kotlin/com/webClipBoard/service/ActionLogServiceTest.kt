@@ -126,6 +126,8 @@ class ActionLogServiceTest {
         assertThat(logs).hasSize(1)
         assertThat(logs[0].actionType).isEqualTo(ActionType.CREATE_FOLDER)
         assertThat(logs[0].folderId).isEqualTo(folderId)
+        assertThat(logs[0].parentId).isEqualTo(null)
+        assertThat(logs[0].newName).isEqualTo("root")
     }
 
     @Test

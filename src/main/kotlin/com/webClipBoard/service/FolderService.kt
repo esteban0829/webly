@@ -38,7 +38,7 @@ class FolderService(
 
         actionLogService.logCreateFolder(
             project = projectAccount.project,
-            folderId = folder.id!!
+            folder = folder,
         )
 
         return folder.id!!

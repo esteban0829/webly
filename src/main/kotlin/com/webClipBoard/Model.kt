@@ -257,6 +257,8 @@ class MoveLinkActionLog(
 class CreateFolderActionLog(
     project: Project,
     val folderId: Long,
+    val name: String,
+    val parentId: Long?,
 ) : ActionLog(project = project)
 
 @Entity

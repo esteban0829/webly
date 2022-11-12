@@ -59,10 +59,12 @@ class ActionLogService(
     }
 
     @Transactional
-    fun logCreateFolder(project: Project, folderId: Long) {
+    fun logCreateFolder(project: Project, folder: Folder) {
         actionLogRepository.save(CreateFolderActionLog(
             project = project,
-            folderId = folderId,
+            folderId = folder.id!!,
+            name = folder.name,
+            parentId = folder.parent?.id
         ))
     }
 

@@ -139,6 +139,7 @@ data class CreateLinkDTO(
 )
 
 data class ActionLogDTO(
+    val id: Long,
     val actionType: ActionType,
     val linkId: Long? = null,
     val folderId: Long? = null,
@@ -146,37 +147,43 @@ data class ActionLogDTO(
     val newName: String? = null,
     val fromFolderId: Long? = null,
     val toFolderId: Long? = null,
+    val parentId: Long? = null,
 ) {
     companion object {
         fun of(actionLog: ActionLog): ActionLogDTO = actionLog.run {
             when (this) {
-                is CreateLinkActionLog -> ActionLogDTO(ActionType.CREATE_LINK, linkId = linkId)
-                is DeleteLinkActionLog -> ActionLogDTO(ActionType.DELETE_LINK, linkId = linkId)
-                is RenameLinkActionLog -> ActionLogDTO(
-                        ActionType.RENAME_LINK,
-                        linkId = linkId,
-                        oldName = oldName,
-                        newName = newName,
+                is CreateLinkActionLog -> ActionLogDTO(id!!, ActionType.CREATE_LINK, linkId = linkId)
+                is DeleteLinkActionLog -> ActionLogDTO(id!!, ActionType.DELETE_LINK, linkId = linkId)
+                is RenameLinkActionLog -> ActionLogDTO(id!!,
+                    ActionType.RENAME_LINK,
+                    linkId = linkId,
+                    oldName = oldName,
+                    newName = newName,
                 )
-                is MoveLinkActionLog -> ActionLogDTO(
-                        ActionType.MOVE_LINK,
-                        linkId = linkId,
-                        fromFolderId = fromFolderId,
-                        toFolderId = toFolderId,
+                is MoveLinkActionLog -> ActionLogDTO(id!!,
+                    ActionType.MOVE_LINK,
+                    linkId = linkId,
+                    fromFolderId = fromFolderId,
+                    toFolderId = toFolderId,
                 )
-                is CreateFolderActionLog -> ActionLogDTO(ActionType.CREATE_FOLDER, folderId = folderId)
-                is DeleteFolderActionLog -> ActionLogDTO(ActionType.DELETE_FOLDER, folderId = folderId)
-                is RenameFolderActionLog -> ActionLogDTO(
-                        ActionType.RENAME_FOLDER,
-                        folderId = folderId,
-                        oldName = oldName,
-                        newName = newName,
+                is CreateFolderActionLog -> ActionLogDTO(id!!,
+                    ActionType.CREATE_FOLDER,
+                    folderId = folderId,
+                    newName = name,
+                    parentId = parentId
                 )
-                is MoveFolderActionLog -> ActionLogDTO(
-                        ActionType.MOVE_FOLDER,
-                        folderId = folderId,
-                        fromFolderId = fromFolderId,
-                        toFolderId = toFolderId,
+                is DeleteFolderActionLog -> ActionLogDTO(id!!, ActionType.DELETE_FOLDER, folderId = folderId)
+                is RenameFolderActionLog -> ActionLogDTO(id!!,
+                    ActionType.RENAME_FOLDER,
+                    folderId = folderId,
+                    oldName = oldName,
+                    newName = newName,
+                )
+                is MoveFolderActionLog -> ActionLogDTO(id!!,
+                    ActionType.MOVE_FOLDER,
+                    folderId = folderId,
+                    fromFolderId = fromFolderId,
+                    toFolderId = toFolderId,
                 )
                 else -> throw Exception("unknown Action Type")
             }
