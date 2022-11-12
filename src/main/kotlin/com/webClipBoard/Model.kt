@@ -153,10 +153,10 @@ class Folder(
     @JoinColumn(name = "project_id")
     val project: Project,
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = [CascadeType.REMOVE])
     val childFolders: MutableList<Folder> = ArrayList(),
 
-    @OneToMany(mappedBy = "folder")
+    @OneToMany(mappedBy = "folder", cascade = [CascadeType.REMOVE])
     val childLinks: MutableList<Link> = ArrayList(),
 ) : BaseTimeEntity() {
     fun isDescendantOf(folder: Folder): Boolean {

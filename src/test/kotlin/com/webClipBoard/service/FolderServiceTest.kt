@@ -76,6 +76,27 @@ class FolderServiceTest {
     }
 
     @Test
+    fun `deleteFolder delete children folders`() {
+        val parentFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "parent",
+            parentId = null
+        ))
+        val childFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "child",
+            parentId = parentFolderId
+        ))
+        folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "child",
+            parentId = childFolderId
+        ))
+
+        folderService.deleteFolder(owner, projectId, parentFolderId)
+
+        val result = folderService.getFolders(owner, projectId, null)
+        assertThat(result).isEmpty()
+    }
+
+    @Test
     fun moveFolder() {
         val parentFolderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
             name = "root",
