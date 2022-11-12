@@ -180,7 +180,7 @@ class ActionLogServiceTest {
 
         val logs = actionLogService.getActionLogs(owner, projectId, lastLogId)
         assertThat(logs).hasSize(1)
-        assertThat(logs[0].actionType).isEqualTo(ActionType.MOVE_FOLDER, )
+        assertThat(logs[0].actionType).isEqualTo(ActionType.MOVE_FOLDER)
         assertThat(logs[0].folderId).isEqualTo(childFolderId)
         assertThat(logs[0].fromFolderId).isEqualTo(parentFolderId)
         assertThat(logs[0].toFolderId).isNull()

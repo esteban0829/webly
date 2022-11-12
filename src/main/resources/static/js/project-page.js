@@ -37,7 +37,15 @@ async function main() {
                 }
             },
         },
-        plugins: ["contextmenu"],
+        plugins: ["dnd"],
+    })
+
+    $(document).on('dnd_stop.vakata', async (e, data) => {
+        const nodes = data.data.nodes
+        const target = $tree.jstree(true).get_node(data.event.target)
+        for (const node of nodes) {
+            await moveFolder(projectId, node, target.id, csrf)
+        }
     })
 
     _ = (async () => {
@@ -63,7 +71,6 @@ async function main() {
                         }
                         const node = $tree.jstree(true).get_node(newFolder.parentId)
                         if (node === false || !node.state.loaded) continue
-
                         $tree.jstree(true).create_node(newFolder.parentId, newFolder)
                     }
                     else if (log.actionType === 'DELETE_FOLDER') {
@@ -73,8 +80,23 @@ async function main() {
                     else if (log.actionType === 'RENAME_FOLDER') {
                         $tree.jstree(true).rename_node(log.folderId, log.newName)
                     }
-                }
+                    else if (log.actionType === 'MOVE_FOLDER') {
+                        const oldNode = $tree.jstree(true).get_node(log.folderId)
+                        $tree.jstree(true).delete_node(log.folderId)
 
+                        if (oldNode === false) continue
+
+                        const newFolder = {
+                            id: log.folderId,
+                            children: true,
+                            text: oldNode.text,
+                            parentId: log.toFolderId ?? '#',
+                        }
+                        const parentNode = $tree.jstree(true).get_node(newFolder.parentId)
+                        if (parentNode === false || !parentNode.state.loaded) continue
+                        $tree.jstree(true).create_node(newFolder.parentId, newFolder)
+                    }
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -188,6 +210,17 @@ function renameFolder(projectId, folderId, newName, csrf) {
     })
 }
 
+function moveFolder(projectId, folderId, targetParentId, csrf) {
+    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/move`, {
+        headers: {
+            [csrf.header]: csrf.value,
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: targetParentId,
+    })
+}
+
 async function getActionLogs(projectId, recentReadActionLogId, csrf) {
     const response = await fetch(`/api/v1/projects/${projectId}/action-logs?recentReadActionLogId=${recentReadActionLogId}`, {
         headers: {
@@ -196,7 +229,6 @@ async function getActionLogs(projectId, recentReadActionLogId, csrf) {
     })
     return await response.json()
 }
-
 
 async function getRecentActionLogId(projectId, csrf) {
     const response = await fetch(`/api/v1/projects/${projectId}/action-logs/recent-action-logs`, {
