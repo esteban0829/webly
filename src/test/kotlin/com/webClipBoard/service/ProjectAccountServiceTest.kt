@@ -103,6 +103,19 @@ class ProjectAccountServiceTest {
     }
 
     @Test
+    fun `deleteAccountToProject throw UnAuthorizedProjectException if try to delete owner`() {
+        val owner = testAccountService.createUser(AccountType.OWNER)
+        val projectId = projectService.createProject(CreateProjectDTO(
+            name = "owner_project"
+        ), owner)
+        val projectAccounts = projectAccountService.getProjectAccounts(owner, projectId)
+
+        assertThrows<UnAuthorizedProjectException> {
+            projectAccountService.deleteAccountToProject(owner, projectId, projectAccounts[0].id)
+        }
+    }
+
+    @Test
     fun getProjectAccounts() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val projectId = projectService.createProject(CreateProjectDTO(

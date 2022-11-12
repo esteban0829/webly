@@ -134,7 +134,8 @@ class ProjectAccount(
     }
 
     fun canDeleteAccountToProject(targetAccount: ProjectAccount): Boolean {
-        return projectAccountType == ProjectAccountType.OWNER
+        return projectAccountType == ProjectAccountType.OWNER &&
+                targetAccount.projectAccountType != ProjectAccountType.OWNER
     }
 }
 
