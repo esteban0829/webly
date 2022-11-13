@@ -2,8 +2,9 @@ window.onload = main;
 
 async function main() {
     const addFolderButton = document.getElementById('addFolderButton')
-    const deleteFolderButton = document.getElementById('deleteFolderButton')
-    const renameFolderButton = document.getElementById('renameFolderButton')
+    const addLinkButton = document.getElementById('addLinkButton')
+    const deleteButton = document.getElementById('deleteButton')
+    const renameButton = document.getElementById('renameButton')
     const csrf = {
         header: document.querySelector('meta[name="_csrf_header"]').content,
         value: document.querySelector('meta[name="_csrf"]').content,
@@ -18,21 +19,40 @@ async function main() {
             check_callback: () => enableUpdate,
             data: {
                 url: (node) => {
-                    return `/api/v1/projects/${projectId}/folders`
-                },
-                data: (node) => {
-                    if (node.id === '#')
-                        return {}
-
-                    return { parentId: node.id }
+                    const folderId = toOriginId(node.id)
+                    return node.id === '#'
+                        ? `/api/v1/projects/${projectId}/folders`
+                        : `/api/v1/projects/${projectId}/folders/${folderId}`
                 },
                 dataFilter: (nodes) => {
-                    const data = JSON.parse(nodes).map(x => ({
-                        id: x.id,
-                        children: true,
-                        text: x.name,
-                        parentId: x.parentId ?? '#',
-                    }))
+                    const jsonNode = JSON.parse(nodes)
+                    let data = null
+                    if (typeof(jsonNode.childFolders) !== 'undefined' &&
+                        typeof(jsonNode.childLinks) !== 'undefined') {
+                        const folders = jsonNode.childFolders.map(x => ({
+                            id: toFolderId(x.id),
+                            children: true,
+                            text: x.name,
+                            parentId: toFolderId(x.parentId)
+                        }))
+                        const links = jsonNode.childLinks.map(x => ({
+                            id: toLinkId(x.id),
+                            icon: "jstree-file",
+                            children: false,
+                            text: x.name,
+                            parentId: toFolderId(x.folderId)
+                        }))
+                        data = folders.concat(links)
+                    } else {
+                        data = jsonNode.map(x => ({
+                            id: toFolderId(x.id),
+                            children: true,
+                            text: x.name,
+                            parentId: toFolderId(x.parentId),
+                        }))
+                    }
+                    console.log('dataFilter')
+                    console.log(data)
                     return JSON.stringify(data)
                 }
             },
@@ -58,39 +78,41 @@ async function main() {
 
                 const actionLogs = await getActionLogs(projectId, lastActionLogId, csrf)
                 lastActionLogId = newActionLogId
+                console.log('actionLogs')
                 console.log(actionLogs)
                 enableUpdate = true
                 for (const log of actionLogs) {
                     console.log(log)
                     if (log.actionType === 'CREATE_FOLDER') {
                         const newFolder = {
-                            id: log.folderId,
+                            id: toFolderId(log.folderId),
                             children: true,
                             text: log.newName,
-                            parentId: log.parentId ?? '#',
+                            parentId: toFolderId(log.parentId),
                         }
                         const node = $tree.jstree(true).get_node(newFolder.parentId)
                         if (node === false || !node.state.loaded) continue
                         $tree.jstree(true).create_node(newFolder.parentId, newFolder)
                     }
                     else if (log.actionType === 'DELETE_FOLDER') {
-                        const folderId = log.folderId
+                        const folderId = toFolderId(log.folderId)
                         $tree.jstree(true).delete_node(folderId)
                     }
                     else if (log.actionType === 'RENAME_FOLDER') {
-                        $tree.jstree(true).rename_node(log.folderId, log.newName)
+                        $tree.jstree(true).rename_node(toFolderId(log.folderId), log.newName)
                     }
                     else if (log.actionType === 'MOVE_FOLDER') {
-                        const oldNode = $tree.jstree(true).get_node(log.folderId)
-                        $tree.jstree(true).delete_node(log.folderId)
+                        const folderId = toFolderId(log.folderId)
+                        const oldNode = $tree.jstree(true).get_node(folderId)
+                        $tree.jstree(true).delete_node(folderId)
 
                         if (oldNode === false) continue
 
                         const newFolder = {
-                            id: log.folderId,
+                            id: folderId,
                             children: true,
                             text: oldNode.text,
-                            parentId: log.toFolderId ?? '#',
+                            parentId: toFolderId(log.toFolderId),
                         }
                         const parentNode = $tree.jstree(true).get_node(newFolder.parentId)
                         if (parentNode === false || !parentNode.state.loaded) continue
@@ -117,38 +139,92 @@ async function main() {
             parentId = selectedNodes[0]
         }
         try {
-            await addFolder(projectId, folderName, parentId, csrf)
+            await addFolder(projectId, folderName, toOriginId(parentId), csrf)
         } catch (e) {
             console.error(e)
         }
     }
 
-    deleteFolderButton.onclick = async () => {
+    addLinkButton.onclick = async () => {
+        const linkName = window.prompt('Link name')
+        if (!linkName) return;
+        const url = window.prompt('Url')
+        if (!url) return;
+
+        const selectedNodes = $tree.jstree('get_selected')
+        if (selectedNodes.length !== 1) return;
+        const parentId = selectedNodes[0]
+
+        try {
+            await addLink(projectId, toOriginId(parentId), linkName, url, csrf)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    deleteButton.onclick = async () => {
         const selectedNodes = $tree.jstree('get_selected')
         console.log(selectedNodes)
         for (const node of selectedNodes) {
             try {
-                await deleteFolder(projectId, node, csrf)
+                if (isLink(node)) {
+                    const parentId = $tree.jstree(true).get_parent(node)
+                    await deleteLink(projectId, toOriginId(parentId), toOriginId(node), csrf)
+                } else {
+                    await deleteFolder(projectId, toOriginId(node), csrf)
+                }
             } catch (e) {
                 console.error(e)
             }
         }
     }
 
-    renameFolderButton.onclick = async () => {
+    renameButton.onclick = async () => {
         const selectedNodes = $tree.jstree('get_selected')
         if (selectedNodes.length !== 1) return;
-        const folderId = selectedNodes[0]
+        const nodeId = selectedNodes[0]
 
-        const newName = window.prompt('New folder name')
+        const newName = window.prompt('New name')
         if (!newName) return;
 
         try {
-            await renameFolder(projectId, folderId, newName, csrf)
+            if (isLink(nodeId)) {
+                const parentId = $tree.jstree(true).get_parent(nodeId)
+                await renameLink(projectId, toOriginId(parentId), toOriginId(nodeId), newName, csrf)
+            } else {
+                await renameFolder(projectId, toOriginId(nodeId), newName, csrf)
+            }
         } catch (e) {
             console.error(e)
         }
     }
+}
+
+const folderIdPrefix = 'folder-'
+const linkIdPrefix = 'link-'
+
+function toOriginId(id) {
+    if (id === null) return null
+    if (id.startsWith(folderIdPrefix)) {
+        return id.substr(folderIdPrefix.length)
+    }
+    if (id.startsWith(linkIdPrefix)) {
+        return id.substr(linkIdPrefix.length)
+    }
+    return null
+}
+
+function toFolderId(id) {
+    if (id === null) return '#'
+    return 'folder-' + id
+}
+
+function toLinkId(id) {
+    return 'link-' + id
+}
+
+function isLink(id) {
+    return id !== null && id.startsWith(linkIdPrefix)
 }
 
 function sleep(ms) {
@@ -175,6 +251,20 @@ function addFolder(projectId, name, parentId, csrf) {
     })
 }
 
+function addLink(projectId, folderId, name, url, csrf) {
+    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/links`, {
+        headers: {
+            [csrf.header]: csrf.value,
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({
+            name,
+            url,
+        })
+    })
+}
+
 async function getFolders(projectId, csrf) {
     const response = await fetch(`/api/v1/projects/${projectId}/folders`, {
         headers: {
@@ -193,8 +283,8 @@ function deleteFolder(projectId, folderId, csrf) {
     })
 }
 
-function deleteFile(folderId, fileId, csrf) {
-    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/files/${fileId}`, {
+function deleteLink(projectId, folderId, linkId, csrf) {
+    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/links/${linkId}`, {
         headers: {
             [csrf.header]: csrf.value,
         },
@@ -204,6 +294,16 @@ function deleteFile(folderId, fileId, csrf) {
 
 function renameFolder(projectId, folderId, newName, csrf) {
     return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/rename`, {
+        headers: {
+            [csrf.header]: csrf.value,
+        },
+        method: "POST",
+        body: newName,
+    })
+}
+
+function renameLink(projectId, folderId, linkId, newName, csrf) {
+    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/links/${linkId}/rename`, {
         headers: {
             [csrf.header]: csrf.value,
         },
