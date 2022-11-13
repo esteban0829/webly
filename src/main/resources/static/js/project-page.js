@@ -64,7 +64,12 @@ async function main() {
         const nodes = data.data.nodes
         const target = $tree.jstree(true).get_node(data.event.target)
         for (const node of nodes) {
-            await moveFolder(projectId, node, target.id, csrf)
+            if (isLink(node)) {
+                const parentId = $tree.jstree(true).get_parent(node)
+                await moveLink(projectId, toOriginId(parentId), toOriginId(node), toOriginId(target.id), csrf)
+            } else {
+                await moveFolder(projectId, toOriginId(node), toOriginId(target.id), csrf)
+            }
         }
     })
 
@@ -351,6 +356,17 @@ function renameLink(projectId, folderId, linkId, newName, csrf) {
 
 function moveFolder(projectId, folderId, targetParentId, csrf) {
     return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/move`, {
+        headers: {
+            [csrf.header]: csrf.value,
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: targetParentId,
+    })
+}
+
+function moveLink(projectId, folderId, linkId, targetParentId, csrf) {
+    return fetch(`/api/v1/projects/${projectId}/folders/${folderId}/links/${linkId}/move`, {
         headers: {
             [csrf.header]: csrf.value,
             "Content-Type": "application/json",
