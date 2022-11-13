@@ -27,5 +27,5 @@ class LinkNotFoundException : RuntimeException() {
 }
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-class NotAllowedMoveToChildFolderException : RuntimeException() {
+class NotAllowedMoveFolderException : RuntimeException() {
 }

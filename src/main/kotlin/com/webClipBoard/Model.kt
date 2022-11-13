@@ -166,6 +166,10 @@ class Folder(
             else -> parent!!.isDescendantOf(folder)
         }
     }
+
+    fun canMoveTo(folder: Folder): Boolean {
+        return this != folder && !folder.isDescendantOf(this)
+    }
 }
 
 @Entity

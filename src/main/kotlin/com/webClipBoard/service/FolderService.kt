@@ -83,8 +83,8 @@ class FolderService(
             folderRepository.findByIdAndProject(targetParentId, projectAccount.project)
                 ?: throw FolderNotFoundException()
         }
-        if (targetFolder != null && targetFolder.isDescendantOf(folder)) {
-            throw NotAllowedMoveToChildFolderException()
+        if (targetFolder != null && !folder.canMoveTo(targetFolder)) {
+            throw NotAllowedMoveFolderException()
         }
 
         actionLogService.logMoveFolder(

@@ -5,7 +5,6 @@ import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import com.webClipBoard.service.testService.TestProjectService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -124,8 +123,20 @@ class FolderServiceTest {
             parentId = parentFolderId
         ))
 
-        assertThrows<NotAllowedMoveToChildFolderException> {
+        assertThrows<NotAllowedMoveFolderException> {
             folderService.moveFolder(owner, projectId, parentFolderId, childFolderId)
+        }
+    }
+
+    @Test
+    fun `moveFolder can not move to itself`() {
+        val folderId = folderService.createFolder(owner, projectId, CreateFolderDTO(
+            name = "root",
+            parentId = null
+        ))
+
+        assertThrows<NotAllowedMoveFolderException> {
+            folderService.moveFolder(owner, projectId, folderId, folderId)
         }
     }
 

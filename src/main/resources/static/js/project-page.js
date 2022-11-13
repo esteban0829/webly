@@ -11,11 +11,11 @@ async function main() {
     const projectId = getProjectIdFromUrl();
 
     let lastActionLogId = await getRecentActionLogId(projectId, csrf);
-
+    let enableUpdate = false
     const $tree = $('#jstree_div');
     $tree.jstree({
         core: {
-            check_callback: true,
+            check_callback: () => enableUpdate,
             data: {
                 url: (node) => {
                     return `/api/v1/projects/${projectId}/folders`
@@ -59,7 +59,7 @@ async function main() {
                 const actionLogs = await getActionLogs(projectId, lastActionLogId, csrf)
                 lastActionLogId = newActionLogId
                 console.log(actionLogs)
-
+                enableUpdate = true
                 for (const log of actionLogs) {
                     console.log(log)
                     if (log.actionType === 'CREATE_FOLDER') {
@@ -99,6 +99,8 @@ async function main() {
                 }
             } catch (e) {
                 console.error(e);
+            } finally {
+                enableUpdate = false
             }
         }
     })()
