@@ -229,6 +229,9 @@ abstract class ActionLog(
 class CreateLinkActionLog(
     project: Project,
     val linkId: Long,
+    val newName: String,
+    val url: String,
+    val parentId: Long?,
 ) : ActionLog(project = project)
 
 @Entity

@@ -24,7 +24,7 @@ class LinkService(
 
         actionLogService.logCreateLink(
             project = folder.project,
-            linkId = link.id!!,
+            link = link,
         )
 
         return link.id!!

@@ -148,11 +148,18 @@ data class ActionLogDTO(
     val fromFolderId: Long? = null,
     val toFolderId: Long? = null,
     val parentId: Long? = null,
+    val url: String? = null,
 ) {
     companion object {
         fun of(actionLog: ActionLog): ActionLogDTO = actionLog.run {
             when (this) {
-                is CreateLinkActionLog -> ActionLogDTO(id!!, ActionType.CREATE_LINK, linkId = linkId)
+                is CreateLinkActionLog -> ActionLogDTO(id!!,
+                    ActionType.CREATE_LINK,
+                    linkId = linkId,
+                    newName = newName,
+                    parentId = parentId,
+                    url = url,
+                )
                 is DeleteLinkActionLog -> ActionLogDTO(id!!, ActionType.DELETE_LINK, linkId = linkId)
                 is RenameLinkActionLog -> ActionLogDTO(id!!,
                     ActionType.RENAME_LINK,

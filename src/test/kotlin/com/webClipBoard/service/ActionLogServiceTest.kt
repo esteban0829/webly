@@ -55,6 +55,9 @@ class ActionLogServiceTest {
         assertThat(logs).hasSize(1)
         assertThat(logs[0].actionType).isEqualTo(ActionType.CREATE_LINK)
         assertThat(logs[0].linkId).isEqualTo(linkId)
+        assertThat(logs[0].parentId).isEqualTo(folderId)
+        assertThat(logs[0].newName).isEqualTo("link")
+        assertThat(logs[0].url).isEqualTo("url")
     }
 
     @Test

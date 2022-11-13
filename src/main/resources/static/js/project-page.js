@@ -118,6 +118,43 @@ async function main() {
                         if (parentNode === false || !parentNode.state.loaded) continue
                         $tree.jstree(true).create_node(newFolder.parentId, newFolder)
                     }
+                    else if (log.actionType === 'CREATE_LINK') {
+                        const newLink = {
+                            id: toLinkId(log.linkId),
+                            icon: "jstree-file",
+                            children: false,
+                            text: log.newName,
+                            parentId: toFolderId(log.parentId),
+                        }
+                        const node = $tree.jstree(true).get_node(newLink.parentId)
+                        if (node === false || !node.state.loaded) continue
+                        $tree.jstree(true).create_node(newLink.parentId, newLink)
+                    }
+                    else if (log.actionType === 'DELETE_LINK') {
+                        const linkId = toLinkId(log.linkId)
+                        $tree.jstree(true).delete_node(linkId)
+                    }
+                    else if (log.actionType === 'RENAME_LINK') {
+                        $tree.jstree(true).rename_node(toLinkId(log.linkId), log.newName)
+                    }
+                    else if (log.actionType === 'MOVE_LINK') {
+                        const linkId = toLinkId(log.linkId)
+                        const oldNode = $tree.jstree(true).get_node(linkId)
+                        $tree.jstree(true).delete_node(linkId)
+
+                        if (oldNode === false) continue
+
+                        const newLink = {
+                            id: linkId,
+                            icon: "jstree-file",
+                            children: false,
+                            text: oldNode.text,
+                            parentId: toFolderId(log.toFolderId),
+                        }
+                        const parentNode = $tree.jstree(true).get_node(newLink.parentId)
+                        if (parentNode === false || !parentNode.state.loaded) continue
+                        $tree.jstree(true).create_node(newLink.parentId, newLink)
+                    }
                 }
             } catch (e) {
                 console.error(e);

@@ -23,10 +23,13 @@ class ActionLogService(
     }
 
     @Transactional
-    fun logCreateLink(project: Project, linkId: Long) {
+    fun logCreateLink(project: Project, link: Link) {
         actionLogRepository.save(CreateLinkActionLog(
             project = project,
-            linkId = linkId,
+            linkId = link.id!!,
+            newName = link.name,
+            url = link.url,
+            parentId = link.folder?.id!!,
         ))
     }
 
