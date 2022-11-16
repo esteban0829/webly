@@ -5,6 +5,8 @@ async function main() {
     const addLinkButton = document.getElementById('addLinkButton')
     const deleteButton = document.getElementById('deleteButton')
     const renameButton = document.getElementById('renameButton')
+    const selectedTitle = document.getElementById("selectedTitle")
+    const selectedLink = document.getElementById("selectedLink")
     const csrf = {
         header: document.querySelector('meta[name="_csrf_header"]').content,
         value: document.querySelector('meta[name="_csrf"]').content,
@@ -33,14 +35,15 @@ async function main() {
                             id: toFolderId(x.id),
                             children: true,
                             text: x.name,
-                            parentId: toFolderId(x.parentId)
+                            parentId: toFolderId(x.parentId),
                         }))
                         const links = jsonNode.childLinks.map(x => ({
                             id: toLinkId(x.id),
                             icon: "jstree-file",
                             children: false,
                             text: x.name,
-                            parentId: toFolderId(x.folderId)
+                            parentId: toFolderId(x.folderId),
+                            data: x.url,
                         }))
                         data = folders.concat(links)
                     } else {
@@ -59,6 +62,14 @@ async function main() {
         },
         plugins: ["dnd"],
     })
+        .bind("select_node.jstree", (e, data) => {
+            const node = data.instance.get_node(data.selected);
+            if (isLink(node.id)) {
+                selectedTitle.textContent = node.text
+                selectedLink.href = node.data
+                selectedLink.textContent = node.data
+            }
+        })
 
     $(document).on('dnd_stop.vakata', async (e, data) => {
         const nodes = data.data.nodes
@@ -130,6 +141,7 @@ async function main() {
                             children: false,
                             text: log.newName,
                             parentId: toFolderId(log.parentId),
+                            data: log.url,
                         }
                         const node = $tree.jstree(true).get_node(newLink.parentId)
                         if (node === false || !node.state.loaded) continue
