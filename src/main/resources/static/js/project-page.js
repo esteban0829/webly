@@ -82,7 +82,7 @@ async function main() {
                 if (lastActionLogId === newActionLogId) continue;
 
                 const actionLogs = await getActionLogs(projectId, lastActionLogId, csrf)
-                lastActionLogId = newActionLogId
+                lastActionLogId = Math.max(newActionLogId, ...actionLogs.map(x => x.id))
                 console.log('actionLogs')
                 console.log(actionLogs)
                 enableUpdate = true
