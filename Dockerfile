@@ -1,4 +1,4 @@
-FROM amazoncorretto:8
+FROM amazoncorretto:11
 WORKDIR /app
 EXPOSE 8080
 ENV TZ=Asia/Seoul

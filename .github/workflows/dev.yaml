@@ -2,9 +2,9 @@ name: Docker Image Build and Deploy
 on:
   workflow_dispatch: {}
   push:
-    branches: [ "master" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "dev" ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,6 +44,26 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/webly:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/webly:${{ github.sha }}
           cache-from : type=gha
           cache-to : type=gha,mode=max
+  update-argocd-tag:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: ${{ secrets.ARGOCD_REPO }}
+          ref: "release"
+          token: ${{ secrets.ARGOCD_REPO_TOKEN }}
+      - name: change values-dev.yaml
+        run: |
+          sed -i 's/image:.*/image: ${{ secrets.DOCKERHUB_USERNAME }}\/webly:${{ github.sha }}/' argocd/Webly/webly.yaml
+      - name: git push
+        run: |
+          git config --global user.email "webly314@github.com"
+          git config --global user.name "webly314"
+          git add .
+          git commit -m "[Webly] dev server update image tag"
+          git pull origin release
+          git push origin release
