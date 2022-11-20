@@ -1,0 +1,40 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: off
+  h2:
+    console:
+      enabled: true
+  thymeleaf:
+    cache: false #dev only
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: web-clipboard
+      secretKey: password
+    region.static: us-east-1
+    stack:
+      auto: false
+
+my-app:
+  aws:
+    bucket: web-clipboard
+    service-endpoint: http://localhost:9000
