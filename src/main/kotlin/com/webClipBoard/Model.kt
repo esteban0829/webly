@@ -211,6 +211,11 @@ enum class ActionType(val value: String) {
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "action_type", discriminatorType = DiscriminatorType.STRING)
+@Table(
+    indexes = [
+        Index(name="action_log__ix__project_id__id", columnList = "project_id, id"),
+    ]
+)
 abstract class ActionLog(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

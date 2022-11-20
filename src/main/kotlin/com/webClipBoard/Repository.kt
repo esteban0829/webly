@@ -46,7 +46,7 @@ interface LinkRepository: JpaRepository<Link, Long> {
 
 @Repository
 interface ActionLogRepository: JpaRepository<ActionLog, Long> {
-    @Query("select max(a.id) from ActionLog a")
-    fun findMaxIdOrNull(): Long?
+    @Query("select max(a.id) from ActionLog a where a.project.id = :projectId")
+    fun findMaxIdOrNullByProjectId(projectId: Long): Long?
     fun findByIdAfterAndProjectOrderById(id: Long, project: Project): List<ActionLog>
 }

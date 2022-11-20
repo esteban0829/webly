@@ -19,7 +19,7 @@ class ActionLogService(
 
     @Transactional
     fun recentActionId(account: Account, projectId: Long): Long {
-        return actionLogRepository.findMaxIdOrNull() ?: -1
+        return actionLogRepository.findMaxIdOrNullByProjectId(projectId) ?: -1
     }
 
     @Transactional
