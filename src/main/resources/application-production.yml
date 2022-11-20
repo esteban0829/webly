@@ -1,0 +1,39 @@
+spring:
+  config:
+    activate:
+      on-profile: production
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    database-platform: ${JPA_DB_PLATFORM}
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO}
+    properties:
+      hibernate:
+        format_sql: ${HIBERNATE_FORMAT_SQL}
+        show_sql: ${HIBERNATE_SHOW_SQL}
+    open-in-view: off
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template: true
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    region.static: ${S3_REGION}
+    stack:
+      auto: false
+
+my-app:
+  aws:
+    bucket: ${S3_BUCKET}
+    service-endpoint: ${S3_SERVICE_ENDPOINT}
