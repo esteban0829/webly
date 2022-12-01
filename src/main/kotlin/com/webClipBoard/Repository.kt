@@ -21,6 +21,11 @@ interface FileRepository: JpaRepository<File, Long> {
 }
 
 @Repository
+interface PostRepository: JpaRepository<Post, Long> {
+    fun findByCreatorOrderByUpdateDateTime(creator: Account): List<Post>
+}
+
+@Repository
 interface ProjectRepository: JpaRepository<Project, Long> {
     @Query("select p.project from ProjectAccount p join p.project where p.account.id = :accountId")
     fun findByAccountId(accountId: Long): List<Project>

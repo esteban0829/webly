@@ -20,6 +20,30 @@ data class AccountCreateDTO(
     val role: Role,
 )
 
+data class CreatePostDTO(
+    val title: String,
+    val content: String?,
+    val fileId: Long?,
+)
+
+data class PostDTO(
+    val id: Long,
+    val title: String,
+    val content: String?,
+    val fileId: Long?,
+) {
+    companion object {
+        fun of(post: Post): PostDTO {
+            return PostDTO(
+                id = post.id!!,
+                title = post.title,
+                content = post.content,
+                fileId = post.file?.id,
+            )
+        }
+    }
+}
+
 data class FileCreateDTO(
     val fileName: String,
 )

@@ -67,6 +67,23 @@ class Account(
     }
 }
 
+@Entity
+class Post(
+    @Id @GeneratedValue
+    val id: Long? = null,
+    val title: String,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    val creator: Account,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    val file: File?,
+
+    @Lob
+    val content: String?,
+): BaseTimeEntity()
+
 enum class FileStatus {
     UPLOADING, DONE,
 }
