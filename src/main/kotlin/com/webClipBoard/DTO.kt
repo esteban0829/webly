@@ -24,7 +24,21 @@ data class CreatePostDTO(
     val title: String,
     val content: String?,
     val fileId: Long?,
-)
+) {
+    companion object {
+        fun fixture(
+            title: String = "title",
+            content: String? = "content",
+            fileId: Long? = null,
+        ): CreatePostDTO {
+            return CreatePostDTO(
+                title = title,
+                content = content,
+                fileId = fileId,
+            )
+        }
+    }
+}
 
 data class PostDTO(
     val id: Long,

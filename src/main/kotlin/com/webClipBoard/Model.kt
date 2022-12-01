@@ -65,6 +65,24 @@ class Account(
     override fun isEnabled(): Boolean {
         return true
     }
+
+    companion object {
+        fun fixture(
+            userId: String = "userId",
+            userPassword: String = "userPassword",
+            email: String = "email",
+            name: String = "name",
+            role: Role = Role.USER,
+        ): Account {
+            return Account(
+                userId = userId,
+                userPassword = userPassword,
+                email = email,
+                name = name,
+                role = role,
+            )
+        }
+    }
 }
 
 @Entity
@@ -82,7 +100,24 @@ class Post(
 
     @Lob
     val content: String?,
-): BaseTimeEntity()
+): BaseTimeEntity() {
+
+    companion object {
+        fun fixture(
+            title: String = "title",
+            creator: Account,
+            file: File? = null,
+            content: String? = "content",
+        ): Post {
+            return Post(
+                title = title,
+                creator = creator,
+                file = file,
+                content = content,
+            )
+        }
+    }
+}
 
 enum class FileStatus {
     UPLOADING, DONE,
@@ -105,6 +140,20 @@ class File(
         createDateTime = createDateTime,
         updateDateTime = updateDateTime
     )
+
+    companion object {
+        fun fixture(
+            name: String = "name",
+            filePath: String = "filePath",
+            status: FileStatus = FileStatus.DONE
+        ): File {
+            return File(
+                name = name,
+                filePath = filePath,
+                status = status,
+            )
+        }
+    }
 }
 
 @MappedSuperclass
