@@ -8,14 +8,13 @@ import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import com.webClipBoard.service.testService.TestProjectService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
+import kotlin.properties.Delegates.notNull
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -31,9 +30,9 @@ class LinkServiceTest {
     lateinit var folderService: FolderService
 
     lateinit var owner: Account
-    var projectId: Long = 0
-    var folderId: Long = 0
-    var targetFolderId: Long = 0
+    var projectId by notNull<Long>()
+    var folderId by notNull<Long>()
+    var targetFolderId by notNull<Long>()
 
     @BeforeEach
     fun init() {

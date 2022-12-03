@@ -11,6 +11,7 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.DirtiesContext
+import kotlin.properties.Delegates.notNull
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @SpringBootTest
@@ -24,7 +25,7 @@ class FolderServiceTest {
     lateinit var folderService: FolderService
 
     lateinit var owner: Account
-    private var projectId: Long = 0
+    var projectId by notNull<Long>()
 
     @BeforeEach
     fun init() {

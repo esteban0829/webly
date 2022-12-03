@@ -7,7 +7,6 @@ import com.webClipBoard.UnAuthorizedProjectException
 import com.webClipBoard.service.testService.AccountType
 import com.webClipBoard.service.testService.TestAccountService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
