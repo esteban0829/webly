@@ -4,13 +4,14 @@ import com.webClipBoard.*
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AccountService(
     private val accountRepository: AccountRepository,
+    private val passwordEncoder: PasswordEncoder,
 ): UserDetailsService {
     @Transactional
     fun getAll(): List<AccountDTO> {
@@ -22,7 +23,7 @@ class AccountService(
         accountCreateDTO.run {
             return accountRepository.save(Account(
                 userId = userId,
-                userPassword = BCryptPasswordEncoder().encode(userPassword),
+                userPassword = passwordEncoder.encode(userPassword),
                 email = userEmail,
                 name = userName,
                 role = role,
