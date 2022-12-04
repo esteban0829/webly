@@ -50,7 +50,7 @@ class ProjectAccountService(
         val project = projectRepository.findByIdOrNull(projectId)
                 ?: throw ProjectNotFoundException()
 
-        return projectAccountRepository.findByProject(project).map { ProjectAccountDTO.of(it) }
+        return projectAccountRepository.findByProject(project).map(ProjectAccountDTO::of)
     }
 
 }

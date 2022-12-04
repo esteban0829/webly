@@ -14,7 +14,7 @@ class ActionLogService(
     fun getActionLogs(account: Account, projectId: Long, lastReadActionId: Long): List<ActionLogDTO> {
         val projectAccount = projectService.getProjectAccountById(account, projectId)
         return actionLogRepository.findByIdAfterAndProjectOrderById(lastReadActionId, projectAccount.project)
-            .map { ActionLogDTO.of(it) }
+            .map(ActionLogDTO::of)
     }
 
     @Transactional

@@ -12,7 +12,7 @@ class PostService(
 
     @Transactional(readOnly = true)
     fun getPosts(account: Account): List<PostDTO> {
-        return postRepository.findByCreatorOrderByUpdateDateTime(account).map { PostDTO.of(it) }
+        return postRepository.findByCreatorOrderByUpdateDateTime(account).map(PostDTO::of)
     }
 
     @Transactional
