@@ -1,6 +1,7 @@
 package com.webClipBoard.service
 
 import com.webClipBoard.*
+import com.webClipBoard.repository.ProjectQuerydslRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -8,12 +9,13 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ProjectService(
     private val projectRepository: ProjectRepository,
+    private val projectQuerydslRepository: ProjectQuerydslRepository,
     private val projectAccountRepository: ProjectAccountRepository,
 ) {
 
     @Transactional
     fun getProjects(account: Account): List<ProjectDTO> {
-        return projectRepository.findByAccountId(account.id!!).map(ProjectDTO::of)
+        return projectQuerydslRepository.findByAccountId(account.id!!).map(ProjectDTO::of)
     }
 
     @Transactional

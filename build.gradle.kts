@@ -8,6 +8,7 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.jpa") version kotlinVersion
 	kotlin("jvm") version kotlinVersion
 	kotlin("plugin.spring") version kotlinVersion
+	kotlin("kapt") version kotlinVersion
 }
 
 group = "com"
@@ -33,6 +34,9 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 	implementation("io.awspring.cloud:spring-cloud-starter-aws:2.4.2")
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
+	implementation("com.querydsl:querydsl-jpa:5.0.0")
+	kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
+	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	compileOnly("org.springframework.boot:spring-boot-devtools")

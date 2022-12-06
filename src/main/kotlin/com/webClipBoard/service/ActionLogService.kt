@@ -1,25 +1,27 @@
 package com.webClipBoard.service
 
 import com.webClipBoard.*
+import com.webClipBoard.repository.ActionLogQuerydslRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ActionLogService(
     private val actionLogRepository: ActionLogRepository,
+    private val actionLogQuerydslRepository: ActionLogQuerydslRepository,
     private val projectService: ProjectService,
 ) {
 
     @Transactional
     fun getActionLogs(account: Account, projectId: Long, lastReadActionId: Long): List<ActionLogDTO> {
         val projectAccount = projectService.getProjectAccountById(account, projectId)
-        return actionLogRepository.findByIdAfterAndProjectOrderById(lastReadActionId, projectAccount.project)
+        return actionLogQuerydslRepository.findActionLogAfterLastId(projectAccount.project, lastReadActionId)
             .map(ActionLogDTO::of)
     }
 
     @Transactional
     fun recentActionId(account: Account, projectId: Long): Long {
-        return actionLogRepository.findMaxIdOrNullByProjectId(projectId) ?: -1
+        return actionLogQuerydslRepository.findMaxIdOrNull(projectId) ?: -1
     }
 
     @Transactional
