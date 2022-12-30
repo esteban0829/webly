@@ -58,7 +58,7 @@ jobs:
           token: ${{ secrets.ARGOCD_REPO_TOKEN }}
       - name: change values-dev.yaml
         run: |
-          sed -i 's/image:.*/image: ${{ secrets.DOCKERHUB_USERNAME }}\/webly:${{ github.sha }}/' argocd/Webly/webly.yaml
+          sed -i 's/image:.*/image: ${{ secrets.DOCKERHUB_USERNAME }}\/webly:${{ github.sha }}/' oci/argocd/webly/webly.yaml
       - name: git push
         run: |
           git config --global user.email "webly314@github.com"
