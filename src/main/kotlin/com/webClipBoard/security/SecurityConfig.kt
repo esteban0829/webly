@@ -42,7 +42,7 @@ class SecurityConfig {
             authorizeRequests {
 
                 listOf(
-                    "/login", "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting",
+                    "/login", "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting", "/post",
                     *swaggerPaths, h2ConsolePaths
                 ).forEach {
                     authorize(it, permitAll)
