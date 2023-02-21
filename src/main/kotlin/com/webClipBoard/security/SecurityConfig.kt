@@ -5,14 +5,20 @@ import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer
 import org.springframework.security.config.web.servlet.invoke
+import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter
 
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val keycloakLogoutHandler: KeycloakLogoutHandler,
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -24,6 +30,11 @@ class SecurityConfig {
         return WebSecurityCustomizer {
             it.ignoring().antMatchers("/css/**", "/js/**", "/img/**")
         }
+    }
+
+    @Bean
+    fun sessionAuthenticationStrategy(): SessionAuthenticationStrategy {
+        return RegisterSessionAuthenticationStrategy(SessionRegistryImpl())
     }
 
     @Bean
@@ -42,7 +53,7 @@ class SecurityConfig {
             authorizeRequests {
 
                 listOf(
-                    "/login", "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting", "/post",
+                    "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting", "/post",
                     *swaggerPaths, h2ConsolePaths
                 ).forEach {
                     authorize(it, permitAll)
@@ -55,15 +66,15 @@ class SecurityConfig {
                 authorize("/admin", hasAuthority(Role.ADMIN.authority)) // only ADMIN can access
                 authorize(anyRequest, authenticated)
             }
-            formLogin {
-                loginPage = "/login"
-                defaultSuccessUrl("/", alwaysUse = false)
-            }
             logout {
-                logoutSuccessUrl = "/login"
-                invalidateHttpSession = true
+                logoutSuccessUrl = "/"
+                addLogoutHandler(keycloakLogoutHandler)
+            }
+            oauth2Login {
+                loginPage = "/oauth2/authorization/keycloak"
             }
         }
+
         return http.build()
     }
 }
