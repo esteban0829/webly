@@ -9,10 +9,13 @@ import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter
 
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val tokenProvider: TokenProvider,
+) {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -26,10 +29,10 @@ class SecurityConfig {
         }
     }
 
+
     @Bean
     fun configure(http: HttpSecurity): SecurityFilterChain {
         val h2ConsolePaths = "/h2-console/**"
-        val csrfIgnorePaths = arrayOf(h2ConsolePaths, "/swagger-ui/**")
         val swaggerPaths = arrayOf("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
 
         http {
@@ -37,12 +40,13 @@ class SecurityConfig {
                 addHeaderWriter(XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
             }
             csrf {
-                ignoringAntMatchers(*csrfIgnorePaths)
+                disable()
             }
             authorizeRequests {
 
                 listOf(
                     "/login", "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting", "/post",
+                    "/api/v1/auth/login", "/api/v1/health/hello", "/api/v1/admin/accounts/register",
                     *swaggerPaths, h2ConsolePaths
                 ).forEach {
                     authorize(it, permitAll)
@@ -55,6 +59,7 @@ class SecurityConfig {
                 authorize("/admin", hasAuthority(Role.ADMIN.authority)) // only ADMIN can access
                 authorize(anyRequest, authenticated)
             }
+            addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
             formLogin {
                 loginPage = "/login"
                 defaultSuccessUrl("/", alwaysUse = false)

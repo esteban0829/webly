@@ -47,7 +47,7 @@ class Account(
     }
 
     override fun getUsername(): String {
-        return id.toString()
+        return name
     }
 
     override fun isAccountNonExpired(): Boolean {
