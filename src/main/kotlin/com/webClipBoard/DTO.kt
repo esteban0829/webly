@@ -2,6 +2,10 @@ package com.webClipBoard
 
 import java.time.OffsetDateTime
 
+data class LoginSuccessDto(
+    val token: String,
+)
+
 data class AccountDTO(
     val id: Long,
     val name: String,

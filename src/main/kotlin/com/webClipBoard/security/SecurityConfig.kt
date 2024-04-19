@@ -2,6 +2,7 @@ package com.webClipBoard.security
 
 import com.webClipBoard.Role
 import org.springframework.context.annotation.Bean
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -39,6 +40,9 @@ class SecurityConfig(
             headers {
                 addHeaderWriter(XFrameOptionsHeaderWriter(XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN))
             }
+            cors {
+                disable()
+            }
             csrf {
                 disable()
             }
@@ -46,7 +50,7 @@ class SecurityConfig(
 
                 listOf(
                     "/login", "/signup", "/user", "/hello", "/new-project", "/project", "/project-setting", "/post",
-                    "/api/v1/auth/login", "/api/v1/health/hello", "/api/v1/admin/accounts/register",
+                    "/api/v1/auth/login", "/api/v1/auth/me", "/api/v1/health/hello", "/api/v1/admin/accounts/register",
                     *swaggerPaths, h2ConsolePaths
                 ).forEach {
                     authorize(it, permitAll)

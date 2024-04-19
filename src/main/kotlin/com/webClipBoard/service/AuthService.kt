@@ -2,6 +2,7 @@ package com.webClipBoard.service
 
 import com.webClipBoard.AccountRepository
 import com.webClipBoard.LoginFailException
+import com.webClipBoard.LoginSuccessDto
 import com.webClipBoard.security.TokenProvider
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -14,10 +15,10 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder,
 ) {
 
-    fun getToken(username: String, password: String): String? {
+    fun getToken(username: String, password: String): LoginSuccessDto {
         val account = accountRepository.findByEmail(username).orElse(null)
         if (account != null && passwordEncoder.matches(password, account.password)) {
-            return tokenProvider.createToken(account)
+            return LoginSuccessDto(tokenProvider.createToken(account))
         }
         throw LoginFailException()
     }
