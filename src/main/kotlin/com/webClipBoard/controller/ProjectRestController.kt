@@ -53,7 +53,7 @@ class ProjectRestController(
     }
 
     @PostMapping("/{id}/rename")
-    fun getProject(
+    fun renameProject(
         @AuthenticationPrincipal account: Account,
         @PathVariable id: Long,
         @RequestBody newName: String
