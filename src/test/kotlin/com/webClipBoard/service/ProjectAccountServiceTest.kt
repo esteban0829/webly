@@ -38,6 +38,18 @@ class ProjectAccountServiceTest {
     }
 
     @Test
+    fun `addAccountToProject throw Exception if account is duplicated`() {
+        val owner = testAccountService.createUser(AccountType.OWNER)
+        val projectId = projectService.createProject(CreateProjectDTO(
+            name = "owner_project"
+        ), owner)
+
+        assertThrows<RuntimeException> {
+            projectAccountService.addAccountToProject(owner, projectId, CreateProjectAccountDTO(owner.email, true))
+        }
+    }
+
+    @Test
     fun `addAccountToProject throw NotFoundException if project not exists`() {
         val owner = testAccountService.createUser(AccountType.OWNER)
         val stranger = testAccountService.createUser(AccountType.STRANGER)

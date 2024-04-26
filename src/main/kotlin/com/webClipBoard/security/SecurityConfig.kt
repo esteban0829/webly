@@ -2,7 +2,6 @@ package com.webClipBoard.security
 
 import com.webClipBoard.Role
 import org.springframework.context.annotation.Bean
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
@@ -64,6 +63,7 @@ class SecurityConfig(
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
+            addFilterBefore<JwtFilter>(ExceptionHandlerFilter())
             formLogin {
                 loginPage = "/login"
                 defaultSuccessUrl("/", alwaysUse = false)

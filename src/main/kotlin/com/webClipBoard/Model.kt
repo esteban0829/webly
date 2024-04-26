@@ -18,8 +18,10 @@ enum class Role(val permissionLevel: Long, val authority: String) {
 class Account(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
+    @Column(unique = true)
     val userId: String,
     val userPassword: String,
+    @Column(unique = true)
     val email: String,
     val name: String,
     @Enumerated(EnumType.STRING)
@@ -178,6 +180,7 @@ enum class ProjectAccountType {
 }
 
 @Entity
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["account_id", "project_id"])])
 class ProjectAccount(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,

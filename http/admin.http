@@ -1,0 +1,28 @@
+### 로그인
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "2",
+  "password": "2"
+}
+
+===
+### 계정 생성
+POST http://localhost:8080/api/v1/admin/accounts/register
+Content-Type: application/json
+
+{
+  "role": "ADMIN",
+  "userId": "2",
+  "userName": "2",
+  "userPassword": "2",
+  "userEmail": "2"
+}
+
+===
+### 관리자 목록
+GET http://localhost:8080/api/v1/admin/accounts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiZXhwIjoxNzEzNTA4OTY1fQ.C9qNLnOKHBTObtOanN2eDzfNFmQCiGwGXSnNp8TYtG0tEHjrOQLLKmUf8Egoy7SYMs5QEzeXYGfHzW0Pz9l-9g
+
